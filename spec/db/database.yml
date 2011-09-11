@@ -1,0 +1,9 @@
+# vendor/plugins/acts_as_enum/test/database.yml
+
+sqlite:
+  adapter: sqlite
+  database: ":memory:"
+
+sqlite3:
+  adapter: sqlite3
+  database: ":memory:"
