@@ -1,0 +1,37 @@
+he-IL:
+  will_paginate:
+    previous_label: "קודם"
+    next_label: "הבא"
+    page_gap: "&hellip;"
+
+    page_entries_info:
+      single_page:
+        zero:  "לא נמצאו %{model}"
+        one:   "%{model} אחת"
+        other: "את כל ה-%{count} %{model}"
+      single_page_html:
+        zero:  "לא נמצאו %{model}"
+        one:   "%{model} <b>אחת</b>"
+        other: "את <b>כל ה-%{count}</b> %{model}"
+
+      multi_page: "%{model} %{from} - %{to} מתוך %{count}"
+      multi_page_html: "%{model} <b>%{from}&nbsp;-&nbsp;%{to}</b> מתוך <b>%{count}</b>"
+
+    models:
+      entry:
+        zero:  'רשומות'
+        one:   'רשומה'
+        other: 'רשומות'
+      invitation:
+        zero:  'הזמנות'
+        one:   'הזמנה'
+        other: 'הזמנות'
+
+    # line_item:
+    #   page_entries_info:
+    #     single_page:
+    #       zero:  "Your shopping cart is empty"
+    #       one:   "Displaying one item in your cart"
+    #       other: "Displaying all %{count} items"
+    #     multi_page: "Displaying items %{from} - %{to} of %{count} in total"
+  

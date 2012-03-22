@@ -1,0 +1,28 @@
+en-US:
+  plugins:
+    data_grid:
+      more: more..
+      loading: loading..
+      saving: saving...
+      row: row
+      rows_per_page:
+        show: Show
+        per_page: per page
+      multirow_actions:
+        intro: 'Do on selected rows (%{count} rows):'
+        close: Close
+      template_row:
+        destroy: 'Deleting <span class="row_title"></span>...'
+        destroy_error: 'Error deleting <span class="row_title">%{row_title}</span>'
+        create: 'Adding <span class="row_title"></span>...'
+        create_error: 'Error adding <span class="row_title"></span>:'
+      destroy_column:
+        tooltip: Delete row
+        confirm_message: Are your sure?
+      no_rows_filter:
+        message: No results were found for given filter.
+        clear_filter: Reset filter
+      no_rows:
+        message: No rows exist in the system.
+      js:
+        saving: saving...

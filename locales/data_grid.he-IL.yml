@@ -1,0 +1,28 @@
+he-IL:
+  plugins:
+    data_grid:
+      more: 'עוד..'
+      loading: 'טוען נתונים..'
+      saving: 'שמירה...'
+      row: 'שורה'
+      rows_per_page:
+        show: 'מוצגות'
+        per_page: 'שורות בדף'
+      multirow_actions:
+        intro: 'בצע על רשומות מסומנות (%{count} רשומות): '
+        close: 'סגירה'
+      template_row:
+        destroy: 'מחיקת <span class="row_title"></span>...'
+        destroy_error: 'מחיקת <span class="row_title">%{row_title}</span> נכשלה כי'
+        create: 'הוספת <span class="row_title"></span>...'
+        create_error: 'לא ניתן להוסיף <span class="row_title"></span> כי:'
+      destroy_column:
+        tooltip: 'מחיקת רשומה'
+        confirm_message: 'האם הינך בטוח?'
+      no_rows_filter:
+        message: 'אין תוצאות עבור הסינון הנוכחי.'
+        clear_filter: 'הסרת סינון'
+      no_rows:
+        message: 'לא נמצאו שורות במערכת.'
+      js:
+        saving: 'שמירה...'

@@ -1,0 +1,8 @@
+%div.row_destroy_error
+  %span.text=message
+  %span.reason=model.errors.values.flatten.first
+  =link_to t('application.close'), 'javascript:;', :class => 'close'
+
+  %div.original_invitation
+    =render(options[:partial], :data_grid_config => AjaxDataGrid::Config.new(:rows => [model.reload]))
+
