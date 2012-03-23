@@ -1,0 +1,359 @@
+@import "lib/mixin"
+
+div.grid
+  div.toolbar
+    border: 1px solid #E1D7C0
+    background-color: #F8F3E5
+    padding: 10px 10px
+    div.clear
+      clear: left
+    div.loading
+      float: right
+      padding: 6px 0px 6px 20px
+      color: #777
+      background: transparent url(/images/spinner-16x16.gif) no-repeat left center
+      display: none
+
+    div.pageSize, div.pages, div.pagesInfo
+      float: left
+    div.pagesInfo
+      line-height: 28px
+    div.vspacer
+      float: left
+      margin: 0px 5px
+
+    div.pageSize
+      padding: 4px 0px
+      select
+        margin: 0px 5px
+
+
+    div.multirow_actions
+      //padding: 10px 20px
+      display: none
+      a.button3
+        padding: 5px 10px
+        margin: 0px 3px
+
+
+    div.pages
+      a, em.current, span.disabled, span.gap
+        float: left
+      a, em.current, span.disabled
+        padding: 5px 8px
+        background-color: white
+        border: 1px solid #BABABA
+        color: #949488
+        @include round(6px)
+        margin: 0px 1px
+      a:hover
+        color: white
+        background-color: #41769B
+      em.current
+        color: white
+        background-color: #63A0CE
+      span.disabled
+        color: #ccc
+        background-color: #efefef
+
+
+    &.top
+      @include round(15px 15px 0px 0px)
+    &.bottom
+      @include round(0px 0px 15px 15px)
+
+  &.loading
+    div.toolbar
+      div.loading
+        display: block
+
+  &.has_selection
+    div.toolbar
+      div.multirow_actions
+        display: block
+      div.pagination_wrapper
+        display: none
+
+  table
+    width: 100%
+    border: 1px solid #e4e4e4
+    border-collapse: collapse
+    table-layout: fixed
+
+    thead tr th, tbody tr td
+      &.right
+        div.cell
+          text-align: right
+      &.left
+        div.cell
+          text-align: left
+      &.center
+        div.cell
+          text-align: center
+      &.selection
+        width: 45px
+        cursor: pointer
+        text-align: center
+        span.checkbox
+          background: transparent url(/images/icons/unchecked-19x20.png) no-repeat center center
+          display: inline-block
+          width: 24px
+          height: 24px
+          &.selected
+            background-image: url(/images/icons/checked-19x20.png)
+
+    thead
+      tr
+        th
+          height: 36px
+          padding: 5px 0px
+          background: #3B698C url(/images/client/components/table_header.png) repeat-x left top
+          color: white
+          font-size: 18px
+          text-align: left
+          border: 1px solid #6297b4
+          div.cell
+            padding: 0px 5px
+            div.maintitle.with_subtitle
+              font-size: 15px
+            div.subtitle
+              font-size: 11px
+              font-style: italic
+              font-weight: normal
+              color: #C6D9E7
+
+          &.sortable
+            cursor: pointer
+            div.cell
+              background-position: right center
+              background-repeat: no-repeat
+            &.asc, &.desc
+              div.cell
+                padding-right: 15px
+                margin-right: 5px
+            &.asc
+              div.cell
+                background-image: url(/images/icons/up-white-9x9.gif)
+            &.desc
+              div.cell
+                background-image: url(/images/icons/down-white-9x9.gif)
+
+          &.small
+            font-size: 15px
+
+    tbody
+      tr
+        &.no-data
+          display: none
+          td
+            text-align: center
+            padding: 20px
+            div.no
+              padding: 20px
+              margin: 0px auto
+              @include round(15px)
+              background-color: #F7FFBB
+              width: 300px
+              display: none
+
+              div.message
+                text-align: center
+                padding-bottom: 15px
+              div.buttonsBar
+                text-align: center
+                padding: 11px 0px
+                a.button3
+                  margin: 0px 10px
+
+          &.rows
+            td
+              div.no.rows
+                display: block
+
+          &.filter-results
+            td
+              div.no.filter-results
+                display: block
+
+        &.template
+          display: none
+        &.working
+          td
+            padding: 0px 10px
+            div.message
+              background: transparent url(/images/spinner-16x16.gif) no-repeat left center
+              padding: 0px 25px
+            span.row_title
+              font-weight: bold
+        &.creating, &.destroying
+          div.original
+            display: none
+          div.row_action_error, div.error
+            display: none
+          &.error
+            background-color: #ffe6e6
+            div.row_action_error, div.error
+              display: block
+              a.close
+                color: #1D6DFF
+                text-decoration: underline
+                padding: 1px 2px
+                &:hover
+                  text-decoration: none
+                  background-color: #175ede
+                  color: white
+            div.message
+              display: none
+        &.creating
+          background-color: #e6ffe6
+
+        &.odd
+          td
+            background-color: #eef3f5
+        &.even
+          td
+            background-color: #ffffff
+        &:hover
+          &.odd
+            td
+              background-color: #d0dfe5
+          &.even
+            td
+              background-color: #d9d9d9
+          td.edit, td.destroy
+            @include opacity(1)
+
+
+
+        td
+          border: 1px solid #e4e4e4
+          height: 36px
+          padding: 0px
+
+          div.cell
+            overflow: hidden
+            padding: 0px 10px
+            a
+              text-decoration: underline
+              &.button3
+                text-decoration: none
+
+
+          &.selection
+            &:hover
+              background-color: #fce4cc
+
+          &.editable
+            &:hover
+              background-color: #fce4cc
+
+            &.editing
+              background-color: #ffcc99
+              input
+                border: 1px solid orange
+                padding: 0px 5px
+                outline: none
+              &.center
+                input
+                  text-align: center
+
+          &.working
+            div.saving
+              padding: 0px 5px
+              span.message
+                background: transparent url(/images/spinner-16x16.gif) no-repeat left center
+                padding-left: 20px
+              div.original
+                display: none
+
+          &.error
+            &:hover
+              background-color: #fecfe3
+            background-color: #FFE1EE
+            div.validation-error
+              div.message
+                a
+                  text-decoration: underline
+              div.original
+                display: none
+          &.destroy
+            @include opacity(0.6)
+            &.confirming
+              @include opacity(1)
+              background-color: #ff9999
+            a
+              img
+                background: transparent url(/images/icons/delete-32x32.png) no-repeat center center
+                width: 32px
+                height: 32px
+          &.edit
+            @include opacity(0.6)
+            a
+              img
+                background: transparent url(/images/icons/edit-32x32.png) no-repeat center center
+                width: 32px
+                height: 32px
+
+    &.empty
+      tbody
+        tr.no-data
+          display: table-row
+
+// ------------------------------------------ RTL ----------------------------------------------------------------------
+body.rtl
+  div.grid
+    div.toolbar
+      div.clear
+        clear: right
+      div.loading
+        float: left
+        padding: 6px 20px 6px 0px
+        background-position: right center
+
+      div.pageSize, div.pages, div.pagesInfo, div.vspacer
+        float: right
+      div.pages
+        a, em.current, span.disabled, span.gap
+          float: right
+
+    table
+      thead tr th, tbody tr td
+        &.right
+          div.cell
+            //text-align: left
+        &.left
+          div.cell
+            //text-align: right
+        &.selection
+          div.cell
+            text-align: center
+
+      thead
+        tr
+          th
+            text-align: right
+
+            &.sortable
+              div.cell
+                background-position: left center
+              &.asc, &.desc
+                div.cell
+                  padding-right: 5px
+                  padding-left: 15px
+                  margin-right: 0px
+                  margin-left: 5px
+
+      tbody
+        tr
+          &.working
+            td
+              div.message
+                background-position: right center
+
+          td
+            &.working
+              div.saving
+                span.message
+                  background-position: right center
+                  padding-left: 0px
+                  padding-right: 20px

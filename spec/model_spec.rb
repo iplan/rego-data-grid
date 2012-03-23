@@ -1,10 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "DataGrid::Model" do
+describe "AjaxDataGrid::Model" do
 
   describe 'by default' do
     before :each do
-      @model = DataGrid::Model.new([])
+      @model = AjaxDataGrid::Model.new([])
     end
 
     it 'should not have paging' do
@@ -24,14 +24,14 @@ describe "DataGrid::Model" do
 
     it 'should paginate active records' do
       rows = Article.scoped
-      model = DataGrid::Model.new(rows, {:paging_page_size => 3})
+      model = AjaxDataGrid::Model.new(rows, {:paging_page_size => 3})
       model.rows.size.should == 3
       model.rows.total_pages.should == 5
     end
     it 'should paginate array' do
       rows = Article.all
       rows.should be_a(Array)
-      model = DataGrid::Model.new(rows, {:paging_page_size => 3})
+      model = AjaxDataGrid::Model.new(rows, {:paging_page_size => 3})
       model.rows.size.should == 3
       model.rows.total_pages.should == 5
     end
@@ -46,7 +46,7 @@ describe "DataGrid::Model" do
     end
     it 'should sort active records' do
       rows = Article.scoped
-      model = DataGrid::Model.new(rows, {:sort_by => :title})
+      model = AjaxDataGrid::Model.new(rows, {:sort_by => :title})
       model.rows.size.should == 3
       model.rows[0].title.should =='alex'
       model.rows[1].title.should =='elina'
@@ -55,7 +55,7 @@ describe "DataGrid::Model" do
     it 'should sort array' do
       rows = Article.all
       rows.should be_a(Array)
-      model = DataGrid::Model.new(rows, {:sort_by => :title})
+      model = AjaxDataGrid::Model.new(rows, {:sort_by => :title})
       model.rows[0].title.should =='alex'
       model.rows[1].title.should =='elina'
       model.rows[2].title.should =='guy'

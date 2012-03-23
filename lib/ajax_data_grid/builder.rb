@@ -50,7 +50,7 @@ module AjaxDataGrid
     @@default_formats = {
       :float => '%.2f' # will be passed to sprintf
     }
-    cattr_reader :default_formats
+    def self.default_formats; @@default_formats; end
 
     def initialize(title, options = {}, &block)
       @title = title

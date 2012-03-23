@@ -9,14 +9,14 @@ require 'sqlite3'
 
 require 'rego-data-grid'
 
-#-----------------db stuff
+# ----------------- db stuff ---------------------
 #load models schema (create tables)
 require "db/schema_loader"
 
 #load models
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'models'))
 Dir["#{File.dirname(__FILE__)}/models/**/*.rb"].each {|f| require f}
-#-----------------db stuff end
+# ----------------- end db stuff -----------------
 
 
 # Requires supporting files with custom matchers and macros, etc,
@@ -24,6 +24,7 @@ Dir["#{File.dirname(__FILE__)}/models/**/*.rb"].each {|f| require f}
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 # load factories for factory girl
+require 'rails/version'
 require "factory_girl"
 FactoryGirl.find_definitions
 

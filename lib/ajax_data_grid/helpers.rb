@@ -1,3 +1,5 @@
+require 'action_view'
+
 module AjaxDataGrid
   module ActionView
     module Helpers

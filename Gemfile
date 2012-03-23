@@ -12,7 +12,7 @@ group :development do
   gem "rdoc"
   gem "rspec"
   gem "bundler"
-  gem "jeweler", "~> 1.6.4"
+  gem "jeweler", "~> 1.8.3"
   gem "rcov"
   gem 'sqlite3'
   gem "factory_girl_rails"

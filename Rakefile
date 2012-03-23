@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "rego-data-grid"
   gem.homepage = "http://github.com/alextk/rego-data-grid"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Ajax data grid with pagination}
+  gem.description = %Q{Ajax data grid with pagination}
   gem.email = "tkachev.alex@gmail.com"
   gem.authors = ["Alex Tkachev"]
   # dependencies defined in Gemfile
