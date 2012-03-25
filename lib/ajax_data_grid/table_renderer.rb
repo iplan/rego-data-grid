@@ -233,7 +233,7 @@ module AjaxDataGrid
           if value.is_a?(Float) || value.is_a?(BigDecimal)
             format = column.value_format.is_a?(String) ? column.value_format : AjaxDataGrid::Column.default_formats[:float]
             value = sprintf(format, value)
-          elsif value.is_a?(Boolean)
+          elsif value.is_a?(TrueClass) || value.is_a?(FalseClass)
             value = value.to_s
           end
           value
