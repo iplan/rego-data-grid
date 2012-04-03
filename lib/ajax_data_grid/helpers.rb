@@ -1,5 +1,3 @@
-require 'action_view'
-
 module AjaxDataGrid
   module ActionView
     module Helpers
@@ -39,5 +37,4 @@ module AjaxDataGrid
   end
 end
 
-
-ActionView::Base.send :include, AjaxDataGrid::ActionView::Helpers
+#ActionView::Base.send :include, AjaxDataGrid::ActionView::Helpers

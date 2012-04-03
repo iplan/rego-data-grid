@@ -16,4 +16,4 @@ module AjaxDataGrid
   end
 end
 
-ActionView::Base.send :include, AjaxDataGrid::ActionView::ResponseHelpers
+#ActionView::Base.send :include, AjaxDataGrid::ActionView::ResponseHelpers
