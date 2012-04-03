@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rego-data-grid"
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex Tkachev"]
-  s.date = "2012-03-25"
+  s.date = "2012-04-03"
   s.description = "Ajax data grid with pagination"
   s.email = "tkachev.alex@gmail.com"
   s.extra_rdoc_files = [
@@ -36,9 +36,9 @@ Gem::Specification.new do |s|
     "lib/ajax_data_grid.rb",
     "lib/ajax_data_grid/builder.rb",
     "lib/ajax_data_grid/config.rb",
-    "lib/ajax_data_grid/engine.rb",
     "lib/ajax_data_grid/helpers.rb",
     "lib/ajax_data_grid/model.rb",
+    "lib/ajax_data_grid/rails_engine.rb",
     "lib/ajax_data_grid/response_helpers.rb",
     "lib/ajax_data_grid/table_renderer.rb",
     "lib/rego-data-grid.rb",
@@ -55,6 +55,7 @@ Gem::Specification.new do |s|
     "public/javascripts/vendor/ajax_data_grid/editor.js",
     "public/javascripts/vendor/ajax_data_grid/text_editor.js",
     "public/stylesheets/sass/vendor/ajax_data_grid.sass",
+    "rego-data-grid.gemspec",
     "spec/db/database.yml",
     "spec/db/schema.rb",
     "spec/db/schema_loader.rb",
