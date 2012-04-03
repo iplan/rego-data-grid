@@ -204,6 +204,12 @@ module AjaxDataGrid
       options[:url]
     end
 
+    def link_to_options
+      opts = {}
+      opts[:class] = self.options[:url_class] if self.options[:url_class].present?
+      opts
+    end
+
   end
 
   class DestroyColumn < Column
