@@ -24,6 +24,7 @@ module AjaxDataGrid
               urls: #{@builder.table_options[:urls].to_json},
               columns: #{columns.to_json},
               reinit_qtip: #{@builder.table_options[:reinit_qtip]},
+              reinit_fbox: #{@builder.table_options[:reinit_fbox]},
               server_params: $.parseJSON('#{@builder.config.server_params.to_json}')
             });
             jQuery(document).ready(function(){
@@ -134,7 +135,7 @@ module AjaxDataGrid
                     if cell_content.nil?
                       url = c.url
                       url = url.call(entity) if url.is_a?(Proc)
-                      html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url)
+                      html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, :class => c.options[:url_class] || '')
                     else
                       html += cell_content.to_s
                     end

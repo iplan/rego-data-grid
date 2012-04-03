@@ -6,7 +6,7 @@ module AjaxDataGrid
 
     def initialize(config, table_options = {})
       @config = config
-      @table_options = {:reinit_qtip => true, :manual_clear_filter => false, :empty_rows => config.translate('no_rows.message'), :empty_filter => config.translate('no_rows_filter.message')}.update(table_options)
+      @table_options = {:reinit_qtip => true, :reinit_fbox => true, :manual_clear_filter => false, :empty_rows => config.translate('no_rows.message'), :empty_filter => config.translate('no_rows_filter.message')}.update(table_options)
       raise ArgumentError.new(":row_title attribute not specified or not a Proc") if @table_options[:row_title].present? && !@table_options[:row_title].is_a?(Proc)
       @columns = []
     end

@@ -22,10 +22,6 @@ he-IL:
         zero:  'רשומות'
         one:   'רשומה'
         other: 'רשומות'
-      invitation:
-        zero:  'הזמנות'
-        one:   'הזמנה'
-        other: 'הזמנות'
 
     # line_item:
     #   page_entries_info:

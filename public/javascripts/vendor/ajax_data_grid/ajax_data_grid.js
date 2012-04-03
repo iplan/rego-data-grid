@@ -524,9 +524,9 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
   saveCellValue: function(td, attributeValuesHash){
     var self = this;
-    
+
     var tr = td.closest('tr');
-    var recordId = tr.data('id');    
+    var recordId = tr.data('id');
     this.toggleCellSaving(td, true);
 
     var colIndex = td.index();
@@ -572,7 +572,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var cols = [columnId].concat(column.editor.related_cols || []).collect(function(colId){ return self.columnsById[colId] ? self.columnsById[colId].index : null }).select(function(colIndex){ return colIndex != null; });
     cols.collect(function(colIndex){ return {originalTD: originalTR.find('>td').eq(colIndex), newTD: newTR.find('>td').eq(colIndex)}; }).each(function(datum){
       datum.originalTD.replaceWith(datum.newTD); //cant simply replace with each, need to use datum, 'cause replaceWith breaks col indices in newTR
-      if(self.reinit_qtip) iPlan.ui.util.QTipIntializer.init(datum.newTD)
+      if(self.reinit_qtip) iPlan.ui.util.QTipIntializer.init(datum.newTD);
+      if(self.reinit_fbox) FancyBoxInitalizer.init(datum.newTD);
     });
     originalTR.data('row_title', newTR.data('row_title'));
   },
@@ -585,6 +586,9 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var originalOddEvenClass = originalTR.hasClass('odd') ? 'odd' : 'even';
     newTR.removeClass('odd event').addClass(originalOddEvenClass);
     originalTR.replaceWith(newTR);
+    newTR = $(this.selectors.table).find(trSelector);
+    if(this.reinit_qtip) iPlan.ui.util.QTipIntializer.init(newTR);
+    if(this.reinit_fbox) FancyBoxInitalizer.init(newTR);
   },
 
   onAjaxUpdateRowCellError: function(rowId, columnId, errorText){
@@ -625,9 +629,14 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   onAjaxRowCreated: function(rowUID, rowId, newTableHtml){
+    var trSelector = 'tbody tr[data-id={0}]'.format(rowId);
     var tr = $(this.selectors.table).find('tbody tr.creating[data-row_uid={0}]'.format(rowUID));
-    var newTR = newTableHtml.find('tbody tr[data-id={0}]'.format(rowId));
+    var newTR = newTableHtml.find(trSelector);
     tr.replaceWith(newTR);
+
+    newTR = $(this.selectors.table).find(trSelector);
+    if(this.reinit_qtip) iPlan.ui.util.QTipIntializer.init(newTR);
+    if(this.reinit_fbox) FancyBoxInitalizer.init(newTR);
   },
 
   onAjaxRowDestroyed: function(rowId){

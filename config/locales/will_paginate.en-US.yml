@@ -18,10 +18,6 @@ en-US:
       multi_page_html: "%{model} <b>%{from}&nbsp;-&nbsp;%{to}</b> of <b>%{count}</b> in total"
 
     models:
-      invitation:
-        zero:  'invitations'
-        one:   'invitation'
-        other: 'invitations'
 
     # line_item:
     #   page_entries_info:
