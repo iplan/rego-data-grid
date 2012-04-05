@@ -342,7 +342,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       data: $.param($.extend({_method: 'delete'}, this.server_params)),
       success: function(){
         self.fire('updatedWithAjax');
-        self.reinitQtips();
+        self.reinitQtipsAndFboxes();
       }
     });
   },
@@ -352,8 +352,10 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.updateGridWithAjax(params, callbacks);
   },
 
-  reinitQtips: function(){
-    if(this.reinit_qtip && iPlan.ui.util.QTipIntializer) iPlan.ui.util.QTipIntializer.init(this.selectors.grid);
+  reinitQtipsAndFboxes: function(container){
+    if(arguments.length == 0) container = this.selectors.grid
+    if(this.reinit_qtip && iPlan && iPlan.ui && iPlan.ui.util && iPlan.ui.util.QTipIntializer) iPlan.ui.util.QTipIntializer.init(container);
+    if(this.reinit_fbox && FancyBoxInitalizer) FancyBoxInitalizer.init(container);
   },
 
   markRowAsDestroying: function(rowId){
@@ -557,7 +559,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   onAjaxUpdateGrid: function(newGridHtml, server_params){
     $(this.selectors.grid).replaceWith(newGridHtml);
     this.attachAPI();
-    this.reinitQtips();
+    this.reinitQtipsAndFboxes();
     this.fire('updatedWithAjax');
     this.server_params = server_params;
   },
@@ -572,8 +574,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var cols = [columnId].concat(column.editor.related_cols || []).collect(function(colId){ return self.columnsById[colId] ? self.columnsById[colId].index : null }).select(function(colIndex){ return colIndex != null; });
     cols.collect(function(colIndex){ return {originalTD: originalTR.find('>td').eq(colIndex), newTD: newTR.find('>td').eq(colIndex)}; }).each(function(datum){
       datum.originalTD.replaceWith(datum.newTD); //cant simply replace with each, need to use datum, 'cause replaceWith breaks col indices in newTR
-      if(self.reinit_qtip) iPlan.ui.util.QTipIntializer.init(datum.newTD);
-      if(self.reinit_fbox) FancyBoxInitalizer.init(datum.newTD);
+      self.reinitQtipsAndFboxes(datum.newTD);
     });
     originalTR.data('row_title', newTR.data('row_title'));
   },
@@ -587,8 +588,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     newTR.removeClass('odd event').addClass(originalOddEvenClass);
     originalTR.replaceWith(newTR);
     newTR = $(this.selectors.table).find(trSelector);
-    if(this.reinit_qtip) iPlan.ui.util.QTipIntializer.init(newTR);
-    if(this.reinit_fbox) FancyBoxInitalizer.init(newTR);
+    this.reinitQtipsAndFboxes(newTR);
   },
 
   onAjaxUpdateRowCellError: function(rowId, columnId, errorText){
@@ -635,8 +635,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     tr.replaceWith(newTR);
 
     newTR = $(this.selectors.table).find(trSelector);
-    if(this.reinit_qtip) iPlan.ui.util.QTipIntializer.init(newTR);
-    if(this.reinit_fbox) FancyBoxInitalizer.init(newTR);
+    this.reinitQtipsAndFboxes(newTR);
   },
 
   onAjaxRowDestroyed: function(rowId){
