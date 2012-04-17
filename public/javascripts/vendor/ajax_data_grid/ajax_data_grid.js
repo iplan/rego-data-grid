@@ -354,8 +354,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
   reinitQtipsAndFboxes: function(container){
     if(arguments.length == 0) container = this.selectors.grid
-    if(this.reinit_qtip && iPlan && iPlan.ui && iPlan.ui.util && iPlan.ui.util.QTipIntializer) iPlan.ui.util.QTipIntializer.init(container);
-    if(this.reinit_fbox && FancyBoxInitalizer) FancyBoxInitalizer.init(container);
+    if(this.reinit_qtip && typeof(iPlan) != 'undefined' && iPlan.ui && iPlan.ui.util && iPlan.ui.util.QTipIntializer) iPlan.ui.util.QTipIntializer.init(container);
+    if(this.reinit_fbox && typeof(FancyBoxInitalizer) != 'undefined') FancyBoxInitalizer.init(container);
   },
 
   markRowAsDestroying: function(rowId){
