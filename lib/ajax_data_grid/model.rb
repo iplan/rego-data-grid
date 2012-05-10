@@ -53,7 +53,7 @@ module AjaxDataGrid
     def fetch_rows(rows)
       rows = rows.scoped if rows.respond_to?(:scoped)
 
-      @logger.info "-----------------------------------data grid model rows are #{rows.class}"
+      @logger.debug "-----------------------------------data grid model rows are #{rows.class}"
 
       # peform sorting
       if has_sort?
