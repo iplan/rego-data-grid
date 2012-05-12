@@ -4,7 +4,7 @@ source "http://rubygems.org"
 #   gem "activesupport", ">= 2.3.5"
 
 gem "will_paginate"
-gem 'rails', '~> 3.0.9'
+#gem 'rails', '~> 3.0.9'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.

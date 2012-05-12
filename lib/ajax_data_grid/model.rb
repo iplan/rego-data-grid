@@ -12,7 +12,7 @@ module AjaxDataGrid
     def initialize(rows, options = {})
       @logger = ActiveRecord::Base.logger
 
-      options = {:sort_direction => :asc, :paging_current_page => 1, :sql_sorters => {}}.update(options)
+      options = {:sort_direction => :asc, :paging_current_page => 1, :sql_sorters => {}, :array_sorters => {}}.update(options)
 
       [:sort_direction, :sort_by].each{|key| options[key] = options[key].to_s if options[key].is_a?(Symbol) }
 
@@ -25,19 +25,19 @@ module AjaxDataGrid
     end
 
     def has_sort?
-      options.sort_by.is_a?(String)
+      @options.sort_by.is_a?(String)
     end
 
     def sort_by
-      options.sort_by
+      @options.sort_by
     end
 
     def sort_direction
-      options.sort_direction
+      @options.sort_direction
     end
 
     def has_paging?
-      options.paging_page_size.is_a?(Integer)
+      @options.paging_page_size.is_a?(Integer)
     end
 
     def row_selected?(row)
@@ -57,21 +57,31 @@ module AjaxDataGrid
 
       # peform sorting
       if has_sort?
+        sort_by = @options.sort_by
         if rows.is_a?(ActiveRecord::Relation)
-          if @options.sql_sorters.has_key?(options.sort_by.to_sym)
-            sort_by = @options.sql_sorters[options.sort_by.to_sym]
-          elsif rows.column_names.include?(options.sort_by)
-            sort_by = options.sort_by
+          if @options.sql_sorters.has_key?(sort_by.to_sym)
+            sort_by = @options.sql_sorters[sort_by.to_sym]
+          elsif rows.column_names.include?(sort_by)
             sort_by = "#{rows.table_name}.#{sort_by}" unless sort_by.include?('.')
           else
-            raise ArgumentError.new("Sorting by #{options.sort_by} is not supported")
+            raise ArgumentError.new("Sorting by #{sort_by} is not supported")
           end
 
-          rows = rows.reorder("#{sort_by} #{options.sort_direction}")
+          rows = rows.reorder("#{sort_by} #{@options.sort_direction}")
         elsif rows.is_a?(Array)
-          sort_by = options.sort_by
-          rows = rows.sort_by{|e| value = e.send(sort_by); (value.is_a?(String) ? value.downcase : value) }
-          rows.reverse! if options.sort_direciton == 'desc'
+          if @options.array_sorters.has_key?(sort_by.to_sym)
+            sort_proc = @options.array_sorters[sort_by.to_sym]
+          else
+            sort_proc = Proc.new do |a,b|
+              va = a.send(sort_by)
+              vb = b.send(sort_by)
+              va = va.downcase if va.is_a?(String)
+              vb = vb.downcase if vb.is_a?(String)
+              va <=> vb
+            end
+          end
+          direction_multiply = @options.sort_direction == 'desc' ? -1 : 1
+          rows = rows.sort{|a,b| sort_proc.call(a,b) * direction_multiply }
         end
       end
 

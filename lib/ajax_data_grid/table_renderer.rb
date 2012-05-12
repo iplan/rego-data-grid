@@ -9,7 +9,7 @@ module AjaxDataGrid
         end
 
         def render_table
-          @tpl.haml_tag :div, :'data-grid-id' => @builder.config.grid_id, :class => 'grid_table' do
+          @tpl.haml_tag :div, :'data-grid-id' => @builder.config.grid_id, :class => 'grid_table_wrapper' do
             table_layout do
               table_rows
             end
@@ -28,14 +28,14 @@ module AjaxDataGrid
               server_params: $.parseJSON('#{@builder.config.server_params.to_json}')
             });
             jQuery(document).ready(function(){
-              $('div.grid_table[data-grid-id=#{@builder.config.grid_id}]').data('api').init();
+              $.datagrid.helpers.findAPI('#{@builder.config.grid_id}').init();
             });
           js
         end
 
         private
         def table_layout
-          @tpl.haml_tag :table, :class=>"grid #{@builder.config.model.rows.empty? ? 'empty' : ''}", :cellpadding => 0, :cellspacing => 0 do
+          @tpl.haml_tag :table, :class=>"grid_table #{@builder.config.model.rows.empty? ? 'empty' : ''}", :cellpadding => 0, :cellspacing => 0 do
             @tpl.haml_tag :thead do
               @tpl.haml_tag :tr do
                 @builder.columns.each do |c|
