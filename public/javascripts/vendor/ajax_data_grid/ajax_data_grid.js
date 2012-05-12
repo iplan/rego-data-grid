@@ -18,7 +18,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       multirow_actions: 'div.multirow_actions[data-grid-id={0}]'.format(this.id),
       pageSize: 'div.pageSize[data-grid-id={0}]'.format(this.id),
       pagination: 'div.pages[data-grid-id={0}] div.pagination'.format(this.id),
-      table: 'div.grid_table[data-grid-id={0}] table'.format(this.id),
+      table: 'div.grid_table_wrapper[data-grid-id={0}] table'.format(this.id),
       grid: 'div.grid[data-grid-id={0}]'.format(this.id)
     });
 
@@ -37,7 +37,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   attachAPI: function(){
-    $(this.selectors.table).closest('div.grid_table').data('api', this);
+    $(this.selectors.table).closest('div.grid_table_wrapper').data('api', this);
   },
 
   initEvents: function(){
@@ -664,3 +664,14 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
 });
 
+$.datagrid.helpers = {
+
+  findAPI: function(gridId){
+    return $('div.grid_table_wrapper[data-grid-id={0}]'.format(gridId)).data('api');
+  },
+
+  firstAPI: function(){
+    return $('div.grid_table_wrapper[data-grid-id]').first().data('api');
+  }
+
+};
