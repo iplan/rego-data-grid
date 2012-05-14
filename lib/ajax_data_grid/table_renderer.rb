@@ -97,7 +97,10 @@ module AjaxDataGrid
               @tpl.haml_tag :tr, :class => 'template cell_templates' do
                 @tpl.haml_tag :td, :class => 'saving' do
                   @tpl.haml_tag :div, :class => 'saving' do
-                    @tpl.haml_tag :span, @builder.config.translate('saving'), :class => 'message'
+                    @tpl.haml_tag :span, :class => 'message' do
+                      @tpl.haml_concat @tpl.image_tag('ajax_data_grid/spinner-16x16.gif')
+                      @tpl.haml_tag :span, @builder.config.translate('saving'), :class => 'text'
+                    end
                     @tpl.haml_tag :div, '', :class => 'original'
                   end
                 end

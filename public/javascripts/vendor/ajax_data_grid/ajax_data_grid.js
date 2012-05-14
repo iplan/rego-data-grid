@@ -369,7 +369,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     templateTR.find('td .row_title').html(rowTitle);
     templateTR.find('.original').html(tr);
     templateTR.attr('data-id', rowId);
-    templateTR.insertAfter(tbody.find('tr:eq({0})'.format(insertIndex)));
+    templateTR.insertAfter(tbody.find('>tr:eq({0})'.format(insertIndex)));
 //    tr.replaceWith(templateTR);
   },
 

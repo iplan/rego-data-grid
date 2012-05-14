@@ -208,17 +208,17 @@ div.grid
           background-color: #e6ffe6
 
         &.odd
-          td
+          >td
             background-color: #eef3f5
         &.even
-          td
+          >td
             background-color: #ffffff
         &:hover
           &.odd
-            td
+            >td
               background-color: #d0dfe5
           &.even
-            td
+            >td
               background-color: #d9d9d9
           td.edit, td.destroy
             @include opacity(1)
@@ -261,10 +261,15 @@ div.grid
             div.saving
               padding: 0px 5px
               span.message
-                background: transparent url(/images/ajax_data_grid/spinner-16x16.gif) no-repeat left center
-                padding-left: 20px
+                span.text, img
+                  vertical-align: middle
               div.original
                 display: none
+            &.no_saving_text
+              text-align: center
+              span.message
+                span.text
+                  display: none
 
           &.error
             &:hover
@@ -350,10 +355,3 @@ body.rtl
               div.message
                 background-position: right center
 
-          td
-            &.working
-              div.saving
-                span.message
-                  background-position: right center
-                  padding-left: 0px
-                  padding-right: 20px
