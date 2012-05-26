@@ -43,7 +43,7 @@ module AjaxDataGrid
               data_grid_rows_per_page(cfg)
               data_grid_pagination(cfg)
               data_grid_pagination_info(cfg)
-              haml_tag 'div.clear'
+              #haml_tag 'div.clear'
             end
           end
           if options[:multirow_actions].is_a?(Array) && options[:multirow_actions].length > 0
@@ -55,7 +55,7 @@ module AjaxDataGrid
               haml_concat link_to(cfg.translate('multirow_actions.close'), 'javascript:;', :class => 'button3 grey close')
             end
           end
-          haml_tag 'div.clear'
+          #haml_tag 'div.clear'
         end
       end
 
