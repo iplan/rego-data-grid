@@ -4,57 +4,56 @@ div.grid
   div.toolbar
     border: 1px solid #E1D7C0
     background-color: #F8F3E5
-    padding: 10px 10px
-    div.clear
-      clear: left
-    div.loading
-      float: right
-      padding: 6px 0px 6px 20px
-      color: #777
-      background: transparent url(/images/ajax_data_grid/spinner-16x16.gif) no-repeat left center
-      display: none
-
-    div.pageSize, div.pages, div.pagesInfo
-      float: left
-    div.pagesInfo
-      line-height: 28px
-    div.vspacer
-      float: left
-      margin: 0px 5px
-
-    div.pageSize
-      padding: 4px 0px
-      select
+    padding: 6px 10px
+    div.pagination_wrapper
+      div.pageSize, div.pages, div.pagesInfo
+        float: left
         margin: 0px 5px
-
-
+      div.clear
+        clear: left
+      div.pagesInfo
+        line-height: 28px
+      div.pageSize
+        padding: 4px 0px
+        select
+          margin: 0px 5px
+      div.pages
+        a, em.current, span.disabled, span.gap
+          float: left
+        a, em.current, span.disabled
+          padding: 5px 8px
+          background-color: white
+          border: 1px solid #BABABA
+          color: #949488
+          @include round(6px)
+          margin: 0px 1px
+        a:hover
+          color: white
+          background-color: #41769B
+        em.current
+          color: white
+          background-color: #63A0CE
+        span.disabled
+          color: #ccc
+          background-color: #efefef
+    div.right_wrapper
+      float: right
+      div.loading
+        padding-left: 20px
+        color: #777
+        background: transparent url(/images/ajax_data_grid/spinner-16x16.gif) no-repeat left center
+        display: none
+        line-height: 28px
+      div.activeView
+        padding: 4px 0px
+        select
+          margin: 0px 5px
     div.multirow_actions
       //padding: 10px 20px
       display: none
       a.button3
         padding: 5px 10px
         margin: 0px 3px
-
-
-    div.pages
-      a, em.current, span.disabled, span.gap
-        float: left
-      a, em.current, span.disabled
-        padding: 5px 8px
-        background-color: white
-        border: 1px solid #BABABA
-        color: #949488
-        @include round(6px)
-        margin: 0px 1px
-      a:hover
-        color: white
-        background-color: #41769B
-      em.current
-        color: white
-        background-color: #63A0CE
-      span.disabled
-        color: #ccc
-        background-color: #efefef
 
 
     &.top
@@ -64,14 +63,19 @@ div.grid
 
   &.loading
     div.toolbar
-      div.loading
-        display: block
+      div.right_wrapper
+        div.loading
+          display: block
+        div.activeView
+          display: none
+      div.pagination_wrapper
+        display: none
 
   &.has_selection
     div.toolbar
       div.multirow_actions
         display: block
-      div.pagination_wrapper
+      div.pagination_wrapper, div.right_wrapper
         display: none
 
   table.grid_table
@@ -308,18 +312,22 @@ div.grid
 body.rtl
   div.grid
     div.toolbar
-      div.clear
-        clear: right
-      div.loading
-        float: left
-        padding: 6px 20px 6px 0px
-        background-position: right center
-
-      div.pageSize, div.pages, div.pagesInfo, div.vspacer
-        float: right
-      div.pages
-        a, em.current, span.disabled, span.gap
+      div.pagination_wrapper
+        div.pageSize, div.pages, div.pagesInfo
           float: right
+        div.pages
+          a, em.current, span.disabled, span.gap
+            float: right
+        div.clear
+          clear: right
+      div.right_wrapper
+        float: left
+        div.active_view
+        div.loading
+          padding-right: 20px
+          padding-left: 0px
+          background-position: right center
+
 
     table.grid_table
       thead tr th, tbody tr td

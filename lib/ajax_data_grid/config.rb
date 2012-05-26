@@ -16,7 +16,9 @@ module AjaxDataGrid
         :paging_current_page => 1,
         :selection => :none, #if rows should render preselected
         :sort_by => :created_at,
-        :sort_direction => 'desc'
+        :sort_direction => 'desc',
+        :views => [:default], # column views array. by default only one view which is active
+        :active_view => :default # active view
       }.update(options)
 
       # update from params
@@ -50,28 +52,16 @@ module AjaxDataGrid
       @model.rows
     end
 
-    #def initialize(rows, options = {})
-    #  options = {
-    #    :id => "grid_#{Time.now.to_i + rand(100)}",
-    #    :any_rows => true,
-    #    :i18n_scope => 'plugins.data_grid',
-    #    :per_page_sizes => [10, 25, 50, 1000],
-    #    :selection => :none
-    #  }.update(options)
-    #  options[:grid_id] = options.delete(:id)
-    #
-    #  model_options = options.reject{|k,v| [:i18n_scope, :per_page_sizes].include?(k) }
-    #
-    #  @options = OpenStruct.new(options)
-    #  @model = Model.new(rows, model_options)
-    #end
-
     def grid_id
       @options.grid_id
     end
 
-    def translate(key)
-      I18n.t(key, :scope => @options.i18n_scope)
+    def active_view
+      @options.active_view
+    end
+
+    def translate(key, options = {})
+      I18n.t(key, {:scope => @options.i18n_scope}.update(options))
     end
 
   end

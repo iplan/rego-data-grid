@@ -39,6 +39,8 @@ module AjaxDataGrid
             @tpl.haml_tag :thead do
               @tpl.haml_tag :tr do
                 @builder.columns.each do |c|
+                  next unless c.in_view?(@builder.config.active_view) # skip columns that are not in currently active grid view
+
                   header_cell_options = c.header_cell_options
                   if c.is_a?(SelectColumn) || c.is_a?(DestroyColumn)
 
@@ -126,6 +128,7 @@ module AjaxDataGrid
             row_title = @builder.table_options[:row_title].present? ? "data-row_title='#{@builder.table_options[:row_title].call(entity)}'" : ''
             html += "<tr class='row #{@tpl.cycle(:odd, :even)} #{entity_selected_class}' data-id='#{entity.id}' #{row_title}>"
             @builder.columns.each do |c|
+              next unless c.in_view?(@builder.config.active_view) # skip columns that are not in currently active grid view
 
               cell_attributes = c.body_cell_options.update(body_cell_data_options(c, entity))
 

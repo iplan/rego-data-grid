@@ -1,15 +1,17 @@
 en-US:
   plugins:
     data_grid:
-      more: more..
-      loading: loading..
-      saving: saving...
+      more: More..
+      loading: Loading...
+      saving: Saving...
       row: row
+      views:
+        active_view: Active view
       rows_per_page:
         show: Show
         per_page: per page
       multirow_actions:
-        intro: 'Do on selected rows (%{count} rows):'
+        intro: 'Do on %{count} selected rows:'
         close: Close
       template_row:
         destroy: 'Deleting <span class="row_title"></span>...'

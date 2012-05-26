@@ -1,15 +1,17 @@
 he-IL:
   plugins:
     data_grid:
-      more: 'עוד..'
-      loading: 'טוען נתונים..'
-      saving: 'שמירה...'
-      row: 'שורה'
+      more: עוד...
+      loading: טעינה...
+      saving: שמירה...
+      row: שורה
+      views:
+        active_view: תצוגה
       rows_per_page:
-        show: 'מוצגות'
-        per_page: 'שורות בדף'
+        show: מוצגות
+        per_page: שורות בדף
       multirow_actions:
-        intro: 'בצע על רשומות מסומנות (%{count} רשומות): '
+        intro: 'בצע על %{count} רשומות מסומנות:'
         close: 'סגירה'
       template_row:
         destroy: 'מחיקת <span class="row_title"></span>...'
@@ -17,12 +19,12 @@ he-IL:
         create: 'הוספת <span class="row_title"></span>...'
         create_error: 'לא ניתן להוסיף <span class="row_title"></span> כי:'
       destroy_column:
-        tooltip: 'מחיקת רשומה'
-        confirm_message: 'האם הינך בטוח?'
+        tooltip: מחיקת רשומה
+        confirm_message: האם הינך בטוח?
       no_rows_filter:
-        message: 'אין תוצאות עבור הסינון הנוכחי.'
-        clear_filter: 'הסרת סינון'
+        message: אין תוצאות עבור הסינון הנוכחי.
+        clear_filter: הסרת סינון
       no_rows:
-        message: 'לא נמצאו שורות במערכת.'
+        message: לא נמצאו שורות במערכת.
       js:
-        saving: 'שמירה...'
+        saving: שמירה...

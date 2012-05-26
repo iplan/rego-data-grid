@@ -17,6 +17,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.selectors = $.extend({}, {
       multirow_actions: 'div.multirow_actions[data-grid-id={0}]'.format(this.id),
       pageSize: 'div.pageSize[data-grid-id={0}]'.format(this.id),
+      activeView: 'div.activeView[data-grid-id={0}]'.format(this.id),
       pagination: 'div.pages[data-grid-id={0}] div.pagination'.format(this.id),
       table: 'div.grid_table_wrapper[data-grid-id={0}] table'.format(this.id),
       grid: 'div.grid[data-grid-id={0}]'.format(this.id)
@@ -44,6 +45,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.initSelectionColumnEvents();
     this.initDestroyColumnEvents();
     this.initPagingEvents();
+    this.initActiveViewEvents();
     this.initGridEditingEvents();
     this.initNoDataEvents();
     this.initSortableColumns();
@@ -126,6 +128,18 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       var href = $(this).attr('href');
       self.updateGridWithAjax({paging_current_page: $.query.load(href).keys.paging_current_page});
       return false;
+    });
+  },
+
+  initActiveViewEvents: function(){
+    var self = this;
+
+    //init page size combobox
+    $('select', self.selectors.activeView).live('change', function(){
+      var value = $(this).val();
+      var params = {};
+      params[$(this).attr('name')] = value;
+      self.updateGridWithAjax(params);
     });
   },
 

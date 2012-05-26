@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rego-data-grid"
-  s.version = "0.0.4"
+  s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex Tkachev"]
-  s.date = "2012-05-14"
+  s.date = "2012-05-26"
   s.description = "Ajax data grid with pagination"
   s.email = "tkachev.alex@gmail.com"
   s.extra_rdoc_files = [

@@ -104,6 +104,15 @@ module AjaxDataGrid
       @options[:escape_data_attributes]
     end
 
+    # array of grid views this columns belongs to. if nil, column belongs to all views
+    def views
+      @options[:views]
+    end
+
+    def in_view?(view)
+      views.present? ? views.include?(view.to_sym) : true
+    end
+
     def qtip?
       !options[:qtip].blank?
     end
@@ -142,6 +151,8 @@ module AjaxDataGrid
         opts[:sort_by] = binding_path if opts[:sort_by].blank?
         opts[:sort_direction] = 'asc' if opts[:sort_direction].blank?
       end
+
+      opts[:views] = [opts[:views]] if opts[:views].present? && !opts[:views].is_a?(Array)
     end
     
     def init_html_options
