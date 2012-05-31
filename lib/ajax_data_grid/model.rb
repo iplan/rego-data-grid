@@ -10,7 +10,7 @@ module AjaxDataGrid
     attr_reader :rows, :options
 
     def initialize(rows, options = {})
-      @logger = ActiveRecord::Base.logger
+      @logger = Logging.logger[self.class]
 
       options = {:sort_direction => :asc, :paging_current_page => 1, :sql_sorters => {}, :array_sorters => {}}.update(options)
 

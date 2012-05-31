@@ -3,6 +3,7 @@ source "http://rubygems.org"
 # Example:
 #   gem "activesupport", ">= 2.3.5"
 
+gem "logging"
 gem "will_paginate"
 #gem 'rails', '~> 3.0.9'
 
