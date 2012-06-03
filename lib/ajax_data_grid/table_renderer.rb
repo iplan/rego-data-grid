@@ -136,7 +136,7 @@ module AjaxDataGrid
           @builder.config.model.rows.each do |entity|
             html = ""
             entity_selected_class = @builder.config.model.row_selected?(entity) ? "selected" : ''
-            row_title = @builder.table_options[:row_title].present? ? "data-row_title='#{@builder.table_options[:row_title].call(entity)}'" : ''
+            row_title = @builder.table_options[:row_title].present? ? "data-row_title='#{@builder.table_options[:row_title].call(entity).to_s}'" : ''
             html += "<tr class='row #{@tpl.cycle(:odd, :even)} #{entity_selected_class}' data-id='#{entity.id}' #{row_title}>"
             @builder.columns.each do |c|
               next unless c.in_view?(@builder.config.active_view) # skip columns that are not in currently active grid view
@@ -183,7 +183,7 @@ module AjaxDataGrid
           @builder.config.model.rows.each do |entity|
             html = ''
             entity_selected_class = @builder.config.model.row_selected?(entity) ? ' selected' : ''
-            row_title = @builder.table_options[:row_title].present? ? 'data-row_title="' << @builder.table_options[:row_title].call(entity) << '"' : ''
+            row_title = @builder.table_options[:row_title].present? ? 'data-row_title="' << @builder.table_options[:row_title].call(entity).to_s << '"' : ''
             html << '<tr class="row ' << @tpl.cycle(:odd, :even) << entity_selected_class << '" data-id="' << entity.id.to_s << '"' << row_title << '>'
             @builder.columns.each do |c|
               next unless c.in_view?(@builder.config.active_view) # skip columns that are not in currently active grid view
@@ -232,7 +232,7 @@ module AjaxDataGrid
           @builder.config.model.rows.each do |entity|
             cls_selected = @builder.config.model.row_selected?(entity) ? ' selected' : ''
             cls = 'row ' << @tpl.cycle(:odd, :even) << cls_selected
-            @tpl.haml_tag :tr, :class => cls, 'data-id' => entity.id, 'data-row_title' => @builder.table_options[:row_title].present? ? "data-row_title='#{@builder.table_options[:row_title].call(entity)}'" : nil do
+            @tpl.haml_tag :tr, :class => cls, 'data-id' => entity.id, 'data-row_title' => @builder.table_options[:row_title].present? ? "data-row_title='#{@builder.table_options[:row_title].call(entity).to_s}'" : nil do
 
               @builder.columns.each do |c|
                 next unless c.in_view?(@builder.config.active_view) # skip columns that are not in currently active grid view
@@ -326,7 +326,7 @@ module AjaxDataGrid
           end
           value
         end
-
+        
         def no_rows_for_filter
           @tpl.render 'ajax_data_grid/no_filter_results.html', :builder => @builder
         end
