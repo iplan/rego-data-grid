@@ -16,21 +16,33 @@ module AjaxDataGrid
           end
         end
 
-        def render_js
-          columns = @builder.columns.collect{|c| c.js_options }
-          @tpl.haml_concat @tpl.javascript_tag <<-js
-            new $.datagrid.classes.DataGrid({
-              i18n: $.parseJSON('#{I18n.t('plugins.data_grid.js').to_json}'),
-              urls: #{@builder.table_options[:urls].to_json},
-              columns: #{columns.to_json},
-              reinit_qtip: #{@builder.table_options[:reinit_qtip]},
-              reinit_fbox: #{@builder.table_options[:reinit_fbox]},
-              server_params: $.parseJSON('#{@builder.config.server_params.to_json}')
-            });
-            jQuery(document).ready(function(){
-              $.datagrid.helpers.findAPI('#{@builder.config.grid_id}').init();
-            });
-          js
+        def render_javascript_tag
+          @tpl.haml_concat @tpl.javascript_tag("$.datagrid.helpers.initFromJSON('#{@builder.config.grid_id}');")
+        end
+
+        #def render_js
+        #  columns = @builder.columns.collect{|c| c.js_options }
+        #  @tpl.haml_concat @tpl.javascript_tag <<-js
+        #    new $.datagrid.classes.DataGrid({
+        #      i18n: $.parseJSON('#{I18n.t('plugins.data_grid.js').to_json}'),
+        #      urls: #{@builder.table_options[:urls].to_json},
+        #      columns: #{columns.to_json},
+        #      reinit_qtip: #{@builder.table_options[:reinit_qtip]},
+        #      reinit_fbox: #{@builder.table_options[:reinit_fbox]},
+        #      server_params: $.parseJSON('#{@builder.config.server_params.to_json}')
+        #    });
+        #  js
+        #end
+
+        def render_json_init_div
+          @tpl.haml_tag 'div.json_init', {
+            :i18n => I18n.t('plugins.data_grid.js'),
+            :urls => @builder.table_options[:urls],
+            :columns => @builder.columns.collect{|c| c.js_options },
+            :reinit_qtip => @builder.table_options[:reinit_qtip],
+            :reinit_fbox => @builder.table_options[:reinit_fbox],
+            :server_params => @builder.config.server_params
+          }.to_json, :style => 'display: none'
         end
 
         private

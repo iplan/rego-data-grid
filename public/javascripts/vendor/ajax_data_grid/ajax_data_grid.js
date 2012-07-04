@@ -31,6 +31,10 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.columns.each(function(column){ self.columnsById[column.id] = column; });
 
     this.attachAPI();
+
+    jQuery(document).ready(function(){
+      $.datagrid.helpers.findAPI(self.id).init();
+    });
   },
 
   init: function(){
@@ -686,6 +690,12 @@ $.datagrid.helpers = {
 
   firstAPI: function(){
     return $('div.grid_table_wrapper[data-grid-id]').first().data('api');
+  },
+
+  initFromJSON: function(gridId){
+    var divJsonAPI = $('div.grid[data-grid-id={0}] div.json_init'.format(gridId));
+    var json = $.parseJSON(divJsonAPI.html())
+    new $.datagrid.classes.DataGrid(json);
   }
 
 };

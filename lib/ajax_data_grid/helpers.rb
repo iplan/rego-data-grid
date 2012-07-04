@@ -60,14 +60,19 @@ module AjaxDataGrid
       end
 
       def data_grid_table(cfg, options = {}, &block)
-        options = {:generate_js => !request.xhr?}.update(options)
+        options = {
+          :render_init_js => !request.xhr?,
+          :render_javascript_tag => !request.xhr?
+        }.update(options)
 
         builder = AjaxDataGrid::Builder.new(cfg, options)
         yield builder # user defines columns and their content
 
         renderer = TableRenderer.new(builder, self)
         renderer.render_table
-        renderer.render_js if options[:generate_js]
+        renderer.render_json_init_div if options[:render_init_json]
+        renderer.render_javascript_tag if options[:render_javascript_tag]
+        #renderer.render_js if options[:generate_js]
       end
 
     end
