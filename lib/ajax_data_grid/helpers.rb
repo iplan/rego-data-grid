@@ -61,7 +61,7 @@ module AjaxDataGrid
 
       def data_grid_table(cfg, options = {}, &block)
         options = {
-          :render_init_js => !request.xhr?,
+          :render_init_json => !request.xhr?,
           :render_javascript_tag => !request.xhr?
         }.update(options)
 
