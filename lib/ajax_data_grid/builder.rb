@@ -2,13 +2,19 @@ module AjaxDataGrid
 
   class Builder
 
-    attr_reader :config, :columns, :table_options
+    attr_reader :config, :tile_config, :columns, :table_options
 
     def initialize(config, table_options = {})
       @config = config
       @table_options = {:reinit_qtip => true, :reinit_fbox => true, :manual_clear_filter => false, :empty_rows => config.translate('no_rows.message'), :empty_filter => config.translate('no_rows_filter.message'), :render_type => :string_concat}.update(table_options)
       raise ArgumentError.new(":row_title attribute not specified or not a Proc") if @table_options[:row_title].present? && !@table_options[:row_title].is_a?(Proc)
       @columns = []
+      @tile = nil
+    end
+
+    def tile(options = {}, &block)
+      raise ArgumentError.new("Must pass a block") unless block_given?
+      @tile_config = TileConfig.new(options, &block)
     end
 
     def column(title, options = {}, &block)
@@ -43,6 +49,12 @@ module AjaxDataGrid
 
   end
 
+  class TileConfig
+    attr_reader :block
+    def initialize(options, &block)
+      @block = block
+    end
+  end
 
   class Column
     attr_reader :title, :options, :header_cell_options, :body_cell_options, :js_options, :block

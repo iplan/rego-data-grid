@@ -68,10 +68,7 @@ module AjaxDataGrid
         builder = AjaxDataGrid::Builder.new(cfg, options)
         yield builder # user defines columns and their content
 
-        renderer = TableRenderer.new(builder, self)
-        renderer.render_table
-        renderer.render_json_init_div if options[:render_init_json]
-        renderer.render_javascript_tag if options[:render_javascript_tag]
+        TableRenderer.new(builder, self).render_all
         #renderer.render_js if options[:generate_js]
       end
 

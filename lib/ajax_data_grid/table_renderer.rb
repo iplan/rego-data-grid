@@ -8,10 +8,28 @@ module AjaxDataGrid
           @logger = Logging.logger[self.class]
         end
 
+        def render_all
+          render_table
+          render_json_init_div if @builder.table_options[:render_init_json]
+          render_javascript_tag if @builder.table_options[:render_javascript_tag]
+        end
+
         def render_table
           @tpl.haml_tag :div, :'data-grid-id' => @builder.config.grid_id, :class => 'grid_table_wrapper' do
-            table_layout do
-              table_rows
+            if @builder.config.model.rows.empty?
+              no_rows = @builder.config.model.any_rows? ? ' filter-results' : ' any-filter'
+              @tpl.haml_tag :div, :class => 'no-data' << no_rows do
+                @tpl.haml_tag :div, @builder.table_options[:empty_rows], :class => 'no rows'
+                @tpl.haml_concat no_rows_for_filter
+              end
+            else
+              if @builder.table_options[:tiles_view]
+                tiles_layout
+              else
+                table_layout do
+                  table_rows
+                end
+              end
             end
           end
         end
@@ -46,6 +64,19 @@ module AjaxDataGrid
         end
 
         private
+        def tiles_layout
+          @tpl.haml_tag 'div.tiles_view' do
+            @builder.config.model.rows.each do |entity|
+              cls_selected = @builder.config.model.row_selected?(entity) ? ' selected' : ''
+              cls = 'row ' << @tpl.cycle(:odd, :even) << cls_selected
+              @tpl.haml_tag 'div.tile', :class => cls, 'data-id' => entity.id, 'data-row_title' => @builder.table_options[:row_title].present? ? @builder.table_options[:row_title].call(entity).to_s : nil do
+                cell_content = extract_tile_content(entity).to_s
+                @tpl.haml_concat cell_content unless cell_content.nil?
+              end
+            end
+            @tpl.haml_tag 'div.clear'
+          end
+        end
         def table_layout
           @tpl.haml_tag :table, :class=>"grid_table #{@builder.config.model.rows.empty? ? 'empty' : ''}", :cellpadding => 0, :cellspacing => 0 do
             @tpl.haml_tag :thead do
@@ -80,17 +111,6 @@ module AjaxDataGrid
             end
   
             @tpl.haml_tag :tbody do
-              if @builder.config.model.any_rows?
-                no_rows = @builder.config.model.rows.empty? ? ' filter-results' : ''
-              else
-                no_rows = ' rows'
-              end
-              @tpl.haml_tag :tr, :class => 'no-data' << no_rows do
-                @tpl.haml_tag :td, :colspan => @builder.columns.size do
-                  @tpl.haml_tag(:div, @builder.table_options[:empty_rows], :class => 'no rows')
-                  @tpl.haml_concat no_rows_for_filter
-                end
-              end
               @tpl.haml_tag :tr, :class => 'template destroying' do
                 @tpl.haml_tag :td, :colspan => @builder.columns.size do
                   @tpl.haml_tag :div, @tpl.raw(@builder.config.translate('template_row.destroy')), :class => 'message'
@@ -244,7 +264,7 @@ module AjaxDataGrid
           @builder.config.model.rows.each do |entity|
             cls_selected = @builder.config.model.row_selected?(entity) ? ' selected' : ''
             cls = 'row ' << @tpl.cycle(:odd, :even) << cls_selected
-            @tpl.haml_tag :tr, :class => cls, 'data-id' => entity.id, 'data-row_title' => @builder.table_options[:row_title].present? ? "data-row_title='#{@builder.table_options[:row_title].call(entity).to_s}'" : nil do
+            @tpl.haml_tag :tr, :class => cls, 'data-id' => entity.id, 'data-row_title' => @builder.table_options[:row_title].present? ? @builder.table_options[:row_title].call(entity).to_s : nil do
 
               @builder.columns.each do |c|
                 next unless c.in_view?(@builder.config.active_view) # skip columns that are not in currently active grid view
@@ -281,6 +301,14 @@ module AjaxDataGrid
           end
         end
 
+        def extract_tile_content(entity)
+          tile_config = @builder.tile_config
+          value = nil
+          buffer = @tpl.with_output_buffer { value = tile_config.block.call(entity) }
+          if string = buffer.presence || value and string.is_a?(String)
+            ERB::Util.html_escape string
+          end
+        end
 
         def extract_column_content(column, entity, throw_error = true)
           if column.block.present?

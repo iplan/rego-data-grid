@@ -20,6 +20,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       activeView: 'div.activeView[data-grid-id={0}]'.format(this.id),
       pagination: 'div.pages[data-grid-id={0}] div.pagination'.format(this.id),
       table: 'div.grid_table_wrapper[data-grid-id={0}] table'.format(this.id),
+      grid_table_wrapper: 'div.grid_table_wrapper[data-grid-id={0}]'.format(this.id),
       grid: 'div.grid[data-grid-id={0}]'.format(this.id)
     });
 
@@ -42,7 +43,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   attachAPI: function(){
-    $(this.selectors.table).closest('div.grid_table_wrapper').data('api', this);
+    $(this.selectors.grid_table_wrapper).data('api', this);
   },
 
   initEvents: function(){
@@ -190,7 +191,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var self = this;
 
     //clear filter button
-    $('tr.no-data div.no .clearFilter', this.selectors.grid).live('click', function(){
+    $('div.no-data div.no .clearFilter', this.selectors.grid).live('click', function(){
       if(self.manual_clear_filter){
         self.fire('clearFilter');
       } else {
@@ -575,6 +576,13 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   onAjaxUpdateGrid: function(newGridHtml, server_params){
+    var self = this;
+    if(self.id != this.server_params.grid_id){
+      this.server_params.grid_id = self.id;
+      newGridHtml = $(newGridHtml);
+      newGridHtml.attr('data-grid-id', self.id).find('[data-grid-id]').each(function(){ $(this).attr('data-grid-id', self.id) });
+    }
+
     $(this.selectors.grid).replaceWith(newGridHtml);
     this.attachAPI();
     this.reinitQtipsAndFboxes();
@@ -601,6 +609,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var self = this;
     var trSelector = 'tbody tr[data-id={0}]'.format(rowId);
     var originalTR = $(this.selectors.table).find(trSelector);
+    if(!(newTableHtml instanceof jQuery)) newTableHtml = $(newTableHtml);
     var newTR = newTableHtml.find(trSelector);
     var originalOddEvenClass = originalTR.hasClass('odd') ? 'odd' : 'even';
     newTR.removeClass('odd event').addClass(originalOddEvenClass);
@@ -694,8 +703,9 @@ $.datagrid.helpers = {
 
   initFromJSON: function(gridId){
     var divJsonAPI = $('div.grid[data-grid-id={0}] div.json_init'.format(gridId));
-    var json = $.parseJSON(divJsonAPI.html())
-    new $.datagrid.classes.DataGrid(json);
+    var json = $.parseJSON(divJsonAPI.html());
+    var grid = new $.datagrid.classes.DataGrid(json);
+    grid.reinitQtipsAndFboxes();
   }
 
 };
