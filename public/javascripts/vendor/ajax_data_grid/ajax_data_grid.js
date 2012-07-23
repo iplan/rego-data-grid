@@ -397,7 +397,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     templateTR.attr('data-row_uid', rowUID);
     templateTR.find('td .row_title').html(message);
     templateTR.insertAfter($(this.selectors.table).find('tbody tr.template').last());
-    $(this.selectors.table).removeClass('empty');
+    $(this.selectors.table).find('tr.no-data').hide();
   },
 
   removeCreatingRow: function(tr){
@@ -577,7 +577,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
   onAjaxUpdateGrid: function(newGridHtml, server_params){
     var self = this;
-    if(self.id != this.server_params.grid_id){
+    if(self.id != server_params.grid_id){
       this.server_params.grid_id = self.id;
       newGridHtml = $(newGridHtml);
       newGridHtml.attr('data-grid-id', self.id).find('[data-grid-id]').each(function(){ $(this).attr('data-grid-id', self.id) });

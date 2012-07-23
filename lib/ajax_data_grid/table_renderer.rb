@@ -16,19 +16,11 @@ module AjaxDataGrid
 
         def render_table
           @tpl.haml_tag :div, :'data-grid-id' => @builder.config.grid_id, :class => 'grid_table_wrapper' do
-            if @builder.config.model.rows.empty?
-              no_rows = @builder.config.model.any_rows? ? ' filter-results' : ' any-filter'
-              @tpl.haml_tag :div, :class => 'no-data' << no_rows do
-                @tpl.haml_tag :div, @builder.table_options[:empty_rows], :class => 'no rows'
-                @tpl.haml_concat no_rows_for_filter
-              end
+            if @builder.table_options[:tiles_view]
+              tiles_layout
             else
-              if @builder.table_options[:tiles_view]
-                tiles_layout
-              else
-                table_layout do
-                  table_rows
-                end
+              table_layout do
+                table_rows
               end
             end
           end
@@ -66,15 +58,19 @@ module AjaxDataGrid
         private
         def tiles_layout
           @tpl.haml_tag 'div.tiles_view' do
-            @builder.config.model.rows.each do |entity|
-              cls_selected = @builder.config.model.row_selected?(entity) ? ' selected' : ''
-              cls = 'row ' << @tpl.cycle(:odd, :even) << cls_selected
-              @tpl.haml_tag 'div.tile', :class => cls, 'data-id' => entity.id, 'data-row_title' => @builder.table_options[:row_title].present? ? @builder.table_options[:row_title].call(entity).to_s : nil do
-                cell_content = extract_tile_content(entity).to_s
-                @tpl.haml_concat cell_content unless cell_content.nil?
+            if @builder.config.model.rows.empty?
+              no_rows_message_contents
+            else
+              @builder.config.model.rows.each do |entity|
+                cls_selected = @builder.config.model.row_selected?(entity) ? ' selected' : ''
+                cls = 'row ' << @tpl.cycle(:odd, :even) << cls_selected
+                @tpl.haml_tag 'div.tile', :class => cls, 'data-id' => entity.id, 'data-row_title' => @builder.table_options[:row_title].present? ? @builder.table_options[:row_title].call(entity).to_s : nil do
+                  cell_content = extract_tile_content(entity).to_s
+                  @tpl.haml_concat cell_content unless cell_content.nil?
+                end
               end
+              @tpl.haml_tag 'div.clear'
             end
-            @tpl.haml_tag 'div.clear'
           end
         end
         def table_layout
@@ -111,6 +107,13 @@ module AjaxDataGrid
             end
   
             @tpl.haml_tag :tbody do
+              if @builder.config.model.rows.empty?
+                @tpl.haml_tag :tr, :class => 'no-data' do
+                  @tpl.haml_tag :td, :colspan => @builder.columns.size do
+                    no_rows_message_contents
+                  end
+                end
+              end
               @tpl.haml_tag :tr, :class => 'template destroying' do
                 @tpl.haml_tag :td, :colspan => @builder.columns.size do
                   @tpl.haml_tag :div, @tpl.raw(@builder.config.translate('template_row.destroy')), :class => 'message'
@@ -365,6 +368,16 @@ module AjaxDataGrid
             value = value.to_s
           end
           value
+        end
+
+        def no_rows_message_contents
+          @tpl.haml_tag :div, :class => 'no-data' do
+            if @builder.config.model.any_rows? # any rows at all - no rows in this filter
+              @tpl.haml_concat no_rows_for_filter
+            else # no rows at all
+              @tpl.haml_tag :div, @builder.table_options[:empty_rows], :class => 'no rows'
+            end
+          end
         end
         
         def no_rows_for_filter
