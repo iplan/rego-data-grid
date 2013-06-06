@@ -105,7 +105,7 @@ module AjaxDataGrid
                 end
               end
             end
-  
+
             @tpl.haml_tag :tbody do
               if @builder.config.model.rows.empty?
                 @tpl.haml_tag :tr, :class => 'no-data' do
@@ -150,9 +150,20 @@ module AjaxDataGrid
                     @tpl.haml_tag :div, '', :class => 'original'
                   end
                 end
+                @tpl.haml_tag :td, :class => 'qtip_editor_loading_message' do
+                  @tpl.haml_tag :div, :class => 'qtip_editor_loading_message' do
+                    @tpl.haml_concat @tpl.image_tag('spinner-10x10.gif')
+                    @tpl.haml_concat @builder.config.translate('loading')
+                  end
+                end
+                @tpl.haml_tag :td, :class => 'qtip_editor_loading_failed' do
+                  @tpl.haml_tag :div, :class => 'qtip_editor_loading_failed' do
+                    @tpl.haml_concat @builder.config.translate('loading_failed')
+                  end
+                end
               end
               yield #render rows (invoked block that should call table_rows method)
-            end  
+            end
           end
         end
 
@@ -179,32 +190,32 @@ module AjaxDataGrid
               cell_attributes = c.body_cell_options.update(body_cell_data_options(c, entity))
 
               html += "<td #{cell_attributes.collect{|k,v| "#{k}='#{v}'"}.join(' ')}>"
-                html += "<div class='cell'>"
-                  if c.is_a?(SelectColumn)
-                    html += "<span class='checkbox #{entity_selected_class}'></span>"
-                  elsif c.is_a?(EditColumn)
-                    cell_content = extract_column_content(c, entity, false)
-                    if cell_content.nil?
-                      url = c.url
-                      url = url.call(entity) if url.is_a?(Proc)
-                      html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
-                    else
-                      html += cell_content.to_s
-                    end
-                  elsif c.is_a?(DestroyColumn)
-                    cell_content = extract_column_content(c, entity, false)
-                    if cell_content.nil?
-                      url = c.url
-                      url = url.call(entity) if url.is_a?(Proc)
-                      html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
-                    else
-                      html += cell_content.to_s
-                    end
-                  else
-                    cell_content = extract_column_content(c, entity).to_s
-                    html += cell_content unless cell_content.nil?
-                  end
-                html += "</div>"
+              html += "<div class='cell'>"
+              if c.is_a?(SelectColumn)
+                html += "<span class='checkbox #{entity_selected_class}'></span>"
+              elsif c.is_a?(EditColumn)
+                cell_content = extract_column_content(c, entity, false)
+                if cell_content.nil?
+                  url = c.url
+                  url = url.call(entity) if url.is_a?(Proc)
+                  html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
+                else
+                  html += cell_content.to_s
+                end
+              elsif c.is_a?(DestroyColumn)
+                cell_content = extract_column_content(c, entity, false)
+                if cell_content.nil?
+                  url = c.url
+                  url = url.call(entity) if url.is_a?(Proc)
+                  html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
+                else
+                  html += cell_content.to_s
+                end
+              else
+                cell_content = extract_column_content(c, entity).to_s
+                html += cell_content unless cell_content.nil?
+              end
+              html += "</div>"
               html += "</td>"
             end
             html += "</tr>"
@@ -226,34 +237,34 @@ module AjaxDataGrid
               cell_attributes = c.body_cell_options.update(body_cell_data_options(c, entity))
 
               html << '<td '
-                cell_attributes.each{|k,v| html << k.to_s << '="' << Haml::Helpers.escape_once(v.to_s) << '" '}
+              cell_attributes.each{|k,v| html << k.to_s << '="' << Haml::Helpers.escape_once(v.to_s) << '" '}
               html << '>'
-                html << '<div class="cell">'
-                  if c.is_a?(SelectColumn)
-                    html << '<span class="checkbox ' << entity_selected_class << '"></span>'
-                  elsif c.is_a?(EditColumn)
-                    cell_content = extract_column_content(c, entity, false)
-                    if cell_content.nil?
-                      url = c.url
-                      url = url.call(entity) if url.is_a?(Proc)
-                      html << @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
-                    else
-                      html << cell_content.to_s
-                    end
-                  elsif c.is_a?(DestroyColumn)
-                    cell_content = extract_column_content(c, entity, false)
-                    if cell_content.nil?
-                      url = c.url
-                      url = url.call(entity) if url.is_a?(Proc)
-                      html << @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
-                    else
-                      html << cell_content.to_s
-                    end
-                  else
-                    cell_content = extract_column_content(c, entity).to_s
-                    html << cell_content unless cell_content.nil?
-                  end
-                html << '</div>'
+              html << '<div class="cell">'
+              if c.is_a?(SelectColumn)
+                html << '<span class="checkbox ' << entity_selected_class << '"></span>'
+              elsif c.is_a?(EditColumn)
+                cell_content = extract_column_content(c, entity, false)
+                if cell_content.nil?
+                  url = c.url
+                  url = url.call(entity) if url.is_a?(Proc)
+                  html << @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
+                else
+                  html << cell_content.to_s
+                end
+              elsif c.is_a?(DestroyColumn)
+                cell_content = extract_column_content(c, entity, false)
+                if cell_content.nil?
+                  url = c.url
+                  url = url.call(entity) if url.is_a?(Proc)
+                  html << @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
+                else
+                  html << cell_content.to_s
+                end
+              else
+                cell_content = extract_column_content(c, entity).to_s
+                html << cell_content unless cell_content.nil?
+              end
+              html << '</div>'
               html << '</td>'
             end
             html += '</tr>'
@@ -297,7 +308,7 @@ module AjaxDataGrid
                       cell_content = extract_column_content(c, entity).to_s
                       @tpl.haml_concat cell_content unless cell_content.nil?
                     end
-                 end
+                  end
                 end
               end
             end
@@ -315,11 +326,14 @@ module AjaxDataGrid
 
         def extract_column_content(column, entity, throw_error = true)
           if column.block.present?
-            value = nil
-            buffer = @tpl.with_output_buffer { value = column.block.call(entity) }
-            if string = buffer.presence || value and string.is_a?(String)
-              ERB::Util.html_escape string
-            end
+            @tpl.capture entity, &column.block
+
+            #value = nil
+            #buffer = @tpl.with_output_buffer { value = column.block.call(entity) }
+            #if string = buffer.presence || value and string.is_a?(String)
+            #  ERB::Util.html_escape string
+            #end
+
             #column.block.call(entity)
             #nil # so it won't do @tpl.haml_concat
           elsif column.binding_path.present?
@@ -348,7 +362,7 @@ module AjaxDataGrid
 
           extract_entity_value(entity, column, column.binding_path)
         end
-        
+
         def extract_entity_value(entity, column, value_path)
           value = nil
           if value_path.is_a?(Symbol) || value_path.is_a?(String)
@@ -379,11 +393,11 @@ module AjaxDataGrid
             end
           end
         end
-        
+
         def no_rows_for_filter
           @tpl.render 'ajax_data_grid/no_filter_results.html', :builder => @builder
         end
-        
+
       end
     end
   end

@@ -3,6 +3,7 @@ en-US:
     data_grid:
       more: More..
       loading: Loading...
+      loading_failed: Loading failed
       saving: Saving...
       row: row
       views:

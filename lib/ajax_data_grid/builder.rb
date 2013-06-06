@@ -189,6 +189,7 @@ module AjaxDataGrid
         body_classes << 'editable'
         body_classes << 'dialog_editor' if options[:editor] && options[:editor][:dialog]
         body_classes << 'fbox_editor' if options[:editor] && options[:editor][:fbox]
+        body_classes << 'qtip_editor' if options[:editor] && options[:editor][:qtip]
       end
 
       if sortable?

@@ -5,6 +5,7 @@ source "http://rubygems.org"
 
 gem "logging"
 gem "will_paginate"
+gem "activesupport", '3.0.9'
 #gem 'rails', '~> 3.0.9'
 
 # Add dependencies to develop your gem here.
@@ -16,6 +17,6 @@ group :development do
   gem "jeweler", "~> 1.8.3"
   gem "rcov"
   gem 'sqlite3'
-  gem "factory_girl_rails"
+  gem "factory_girl_rails", '1.7.0'
   gem 'database_cleaner'
 end

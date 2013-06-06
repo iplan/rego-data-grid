@@ -16,9 +16,12 @@ body
         div.pagesInfo
           line-height: 28px
         div.pageSize
-          padding: 4px 0px
+          //padding: 4px 0px
           select
+            width: auto
             margin: 0px 5px
+            height: 30px
+            line-height: 30px
         div.pages
           a, em.current, span.disabled, span.gap
             float: left
@@ -130,16 +133,27 @@ body
           div.cell
             text-align: center
         &.selection
-          width: 45px
+          width: 30px
           cursor: pointer
           text-align: center
-          span.checkbox
-            background: transparent url(/images/ajax_data_grid/unchecked-19x20.png) no-repeat center center
-            display: inline-block
-            width: 24px
-            height: 24px
-            &.selected
-              background-image: url(/images/ajax_data_grid/checked-19x20.png)
+          div.cell
+            padding: 0px
+            span.checkbox
+              background: transparent url(/images/ajax_data_grid/unchecked-19x20.png) no-repeat center center
+              display: inline-block
+              width: 24px
+              height: 24px
+              &.selected
+                background-image: url(/images/ajax_data_grid/checked-19x20.png)
+        &.bootstrap_dropdown
+          div.cell
+            overflow: visible
+            .btn-group
+              a
+                text-decoration: none
+            .dropdown-menu
+              a
+                text-decoration: none
 
       thead
         tr
@@ -157,10 +171,12 @@ body
                 font-size: 15px
               div.subtitle
                 font-size: 11px
+                line-height: 12px
                 font-style: italic
                 font-weight: normal
                 color: #C6D9E7
-
+            &.header_medium
+              font-size: 14px
             &.sortable
               cursor: pointer
               div.cell
@@ -187,7 +203,8 @@ body
               text-align: center
               padding: 20px
 
-
+          &.row
+            margin: 0px
           &.template
             display: none
           &.working
@@ -312,6 +329,39 @@ body
                   width: 32px
                   height: 32px
 
+  div.grid_editor_qtip
+    min-width: 250px
+    .qtip_editor_loading_message
+      margin: 10px 0px
+      text-align: center
+    .qtip_editor_loading_failed
+      margin: 10px 0px
+      font-weight: bold
+      text-align: center
+      color: red
+    .center
+      text-align: center
+    form
+      .row
+        margin-bottom: 5px
+        .field
+          label
+            font-size: 12px
+      .row.float
+        .field
+          margin-right: 10px
+
+  #fancybox-content
+    div.fbox.multiple_editing
+      width: 500px
+      .qtip_editor_loading_message, .qtip_editor_loading_failed
+        text-align: center
+        margin: 20px 0px
+      .qtip_editor_loading_failed
+        color: red
+        font-weight: bold
+
+
 // ------------------------------------------ RTL ----------------------------------------------------------------------
 body.rtl
   div.grid
@@ -322,15 +372,15 @@ body.rtl
         div.pages
           a, em.current, span.disabled, span.gap
             float: right
-        //div.clear
-          clear: right
+      //div.clear
+     clear: right
       div.right_wrapper
         float: left
         div.active_view
-        div.loading
-          padding-right: 20px
-          padding-left: 0px
-          background-position: right center
+          div.loading
+            padding-right: 20px
+            padding-left: 0px
+            background-position: right center
 
     div.tiles_view
       div.tile
@@ -369,4 +419,10 @@ body.rtl
             td
               div.message
                 background-position: right center
+
+  div.grid_editor_qtip
+    form
+      .row.float
+        .field
+          margin-left: 10px
 

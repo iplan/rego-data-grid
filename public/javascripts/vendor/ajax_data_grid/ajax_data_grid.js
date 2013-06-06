@@ -162,6 +162,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
         self.startDialogEditing(td);
       } else if(td.hasClass('fbox_editor')){
         self.startFancyboxEditing(td);
+      } else if(td.hasClass('qtip_editor')){
+        self.startQtipEditing(td);
       } else {
         self.startEditing(td);
       }
@@ -216,6 +218,33 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       self.clearRowsSeleciton();
     });
 
+    //init fbox multiple edit
+    $(self.selectors.multirow_actions).find('a[data-multi_edit=fbox]').live('click', function(){
+      if(!self.hasSelectedRows()) return;
+
+      var loadingHtml = self.getTemplateTDContents('qtip_editor_loading_message');
+      $.fancybox(
+        $.extend({content: $('<div class="fbox multiple_editing"></div>').html(loadingHtml)}, FancyBoxInitalizer.config.forms.fancybox)
+      );
+
+      var url = $(this).data('url');
+      var invitationIds = self.getSelectedRows().map(function(){ return $(this).data('id') }).get();
+      $.ajax({
+        url: url,
+        type: 'post',
+        dataType: 'script',
+        data: $.param({ids: invitationIds}),
+        error: function(xhr){
+          var loadingFailedHtml = self.getTemplateTDContents('qtip_editor_loading_failed');
+          jQuery('.fbox.multiple_editing').html(loadingFailedHtml);
+        },
+        complete: function(){
+
+        }
+      });
+
+    });
+
     //init dialog multi edit buttons
     $(self.selectors.multirow_actions).find('a.dialog').live('click', function(){
       if(!self.hasSelectedRows()) return;
@@ -230,33 +259,33 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       var tds = trs.find('>td:eq({0})'.format(columnIndex));
 
       $.dialog.show({
-          position: {of: $(this)},
-          content: {trs: trs, col: columnIndex},
-          type: dialogType,
-          events: {
-              context: self,
-              approve: function(event, returnData){
-                  self.logger.info('approve click');
-                  if(returnData == null) return;
+        position: {of: $(this)},
+        content: {trs: trs, col: columnIndex},
+        type: dialogType,
+        events: {
+          context: self,
+          approve: function(event, returnData){
+            self.logger.info('approve click');
+            if(returnData == null) return;
 
-                  var params = {ids: [], column_id: columnId, grid_id: self.id, data: returnData};
-                  trs.each(function(){ params.ids.push($(this).data('id')); });
+            var params = {ids: [], column_id: columnId, grid_id: self.id, data: returnData};
+            trs.each(function(){ params.ids.push($(this).data('id')); });
 
-                  self.toggleCellSaving(tds, true);
-                  $.ajax({
-                      url: self.urls.update_multiple,
-                      type: 'post',
-                      dataType: 'script',
-                      data: $.param(params),
-                      error: function(xhr){
-                          self.logger.info('error');
-                      },
-                      complete: function(){
-                          self.toggleCellSaving(tds, false);
-                      }
-                  });
+            self.toggleCellSaving(tds, true);
+            $.ajax({
+              url: self.urls.update_multiple,
+              type: 'post',
+              dataType: 'script',
+              data: $.param(params),
+              error: function(xhr){
+                self.logger.info('error');
+              },
+              complete: function(){
+                self.toggleCellSaving(tds, false);
               }
+            });
           }
+        }
       });
     });
   },
@@ -278,7 +307,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       } else {
         originalHTML = td.html();
       }
-      var savingHTML = this.getTemplateTDContents('saving'); //$('<div class="saving"><span class="text"/><div class="original"/></div>');
+      var savingHTML = $(this.getTemplateTDContents('saving')); //$('<div class="saving"><span class="text"/><div class="original"/></div>');
 //      savingHTML.find('.message').html(this.i18n.saving);
       savingHTML.find('div.original').html(originalHTML);
       td.html(savingHTML);
@@ -416,7 +445,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var trCellTemplates = this.getTemplateTR('cell_templates');
     var td = trCellTemplates.find('td.'+type);
     if(td.length == 0) throw "Data grid template cell of type '{0}' not found".format(type);
-    return $(td.html());
+    return td.html();
   },
 
   getEditorClass: function(type){
@@ -468,6 +497,83 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       $.extend({ href: url, ajax: {data: {grid_id: this.id}}, onClosed: removeEditingClassFunction, onCancel: removeEditingClassFunction}, FancyBoxInitalizer.config.forms.fancybox)
     );
     td.addClass('editing');
+  },
+
+  startQtipEditing: function(td){
+    if(!this.qtipAPI) this._initQtipAPI();
+
+    var self = this;
+    var colIndex = td.index();
+    var column = this.columns[colIndex];
+    var recordId = td.closest('tr').data('id');
+
+    $.ajax({
+      url: column.editor.url.replace("_0_", recordId),
+      type: 'get',
+      dataType: 'script',
+      //data: $.param({request_uid: requestUID}),
+      error: function(xhr){
+        self.logger.error('error loading qtip editor request for column {0} of invitation #{1}', colIndex, recordId);
+        var loadingFailedHtml = self.getTemplateTDContents('qtip_editor_loading_failed');
+        jQuery('.qtip_grid_editor_contents').html(loadingFailedHtml);
+      },
+      complete: function(){
+      }
+    });
+
+    var loadingHtml = this.getTemplateTDContents('qtip_editor_loading_message');
+    this.qtipAPI.set('content.text', $('<div class="qtip_grid_editor_contents"></div>').attr('data-invitation_id', recordId).html(loadingHtml));
+    this.qtipAPI.set('position.target', td);
+    this.qtipAPI.show();
+    td.addClass('editing');
+    this.editing = {
+      qtip: true,
+      td: td
+    };
+  },
+
+  _initQtipAPI: function(){
+    var self = this;
+    var position = {
+      my: 'top center',
+      at: 'bottom center',
+      effect: false,
+      viewport: $('body'),
+      adjust: {y: -15, x: 0, method: 'flipinvert'}
+    };
+    this.qtipAPI = $('<div class="qtip_api_holder"></div>').attr('data-grid_id', this.id).appendTo($(document)).qtip({
+      content: 'content',
+      position: position,
+      events: {
+        show: function(event, api){
+          $(document).on('click.qtip_editor_{0}'.format(self.id), function(e){
+            var target = $(e.target);
+            if(target.closest('.grid_editor_qtip').length == 0){ //didn't click inside tooltip => exit editing mode
+              self.stopQtipEditing();
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          });
+        },
+        hide: function(event, api){
+          $(document).off('click.qtip_editor_{0}'.format(self.id));
+        }
+      },
+      show: {
+        event: false,
+        effect: false
+      },
+      hide: {
+        event: false,
+        effect: false
+      },
+      style:{
+        classes: 'ui-tooltip-bootstrap grid_editor_qtip',
+        tip: {
+          width: 10
+        }
+      }
+    }).qtip('api');
   },
 
   startEditing: function(td){
@@ -530,6 +636,20 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.editingKeyNav.unbind(td);
     td.removeClass('editing');
     this.editing = false;
+  },
+
+  stopQtipEditing: function(){
+    var td = this.editing.td;
+    this.editingKeyNav.unbind(td);
+    td.removeClass('editing');
+    this.editing = false;
+    this.qtipAPI.hide(); //hide qtip
+  },
+
+  doneQtipEditingForInvitation: function(invitationId){
+    if($('div.qtip_grid_editor_contents[data-invitation_id={0}]'.format(invitationId)).length > 0){ //if really editing this qtip, stop it (might happen that this method is invoked when already editing another invitation when ajax request respose is rendered)
+      this.stopQtipEditing();
+    }
   },
 
   getEditingValue: function(){
@@ -605,6 +725,13 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     originalTR.data('row_title', newTR.data('row_title'));
   },
 
+  onAjaxUpdateRows: function(rowsIds, newTableHtml){
+    var self = this;
+    rowsIds.each(function(rowId){
+      self.onAjaxUpdateRow(rowId, newTableHtml);
+    });
+  },
+
   onAjaxUpdateRow: function(rowId, newTableHtml){
     var self = this;
     var trSelector = 'tbody tr[data-id={0}]'.format(rowId);
@@ -612,9 +739,20 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     if(!(newTableHtml instanceof jQuery)) newTableHtml = $(newTableHtml);
     var newTR = newTableHtml.find(trSelector);
     var originalOddEvenClass = originalTR.hasClass('odd') ? 'odd' : 'even';
-    newTR.removeClass('odd event').addClass(originalOddEvenClass);
+    newTR.removeClass('odd even').addClass(originalOddEvenClass);
+
+    var qtipTdIndex = null;
+    if(this.editing && this.editing.qtip && originalTR.find('td.editing').length > 0){
+      //reposition qtip to be at new td after replace with new tr
+      qtipTdIndex = originalTR.find('td.editing').index();
+    }
+
     originalTR.replaceWith(newTR);
     newTR = $(this.selectors.table).find(trSelector);
+    if(qtipTdIndex != null){
+      this.editing.td = newTR.find('td:eq({0})'.format(qtipTdIndex)).addClass('editing');
+      this.qtipAPI.set('position.target', this.editing.td);
+    }
     this.reinitQtipsAndFboxes(newTR);
   },
 
@@ -623,7 +761,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var td = $(this.selectors.table).find('tbody tr[data-id={0}]'.format(rowId)).find('>td').eq(column.index);
     this.toggleCellSaving(td, false);
 
-    var errorHtml = this.getTemplateTDContents('validation-error');
+    var errorHtml = $(this.getTemplateTDContents('validation-error'));
     errorHtml.find('div.original').append(td.html());
     errorHtml.find('.message .text').html(errorText);
     td.html(errorHtml);
@@ -667,7 +805,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
   onAjaxRowDestroyed: function(rowId){
     var self = this;
-    var tr = $(this.selectors.table).find('tbody tr.destroying[data-id={0}]'.format(rowId));
+    var tr = $(this.selectors.table).find('tbody tr.destroying[data-id={0}],tbody tr.row[data-id={0}]'.format(rowId));
     tr.fadeOut(function(){
       $(this).remove();
       self.toggleLoading(false);
