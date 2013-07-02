@@ -36,6 +36,11 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     jQuery(document).ready(function(){
       $.datagrid.helpers.findAPI(self.id).init();
     });
+    $(document).on('click', 'a[data-qtip_editor_close=true]', function(){
+      if($(this).closest('.qtip_grid_editor_contents[data-grid_id={0}]'.format(self.id)).length > 0){
+        self.stopQtipEditing();
+      }
+    });
   },
 
   init: function(){
@@ -130,9 +135,16 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
     //init paging buttons
     $('a', self.selectors.pagination).live('click', function(){
-      var href = $(this).attr('href');
+      var href = $(this).data('url');
       self.updateGridWithAjax({paging_current_page: $.query.load(href).keys.paging_current_page});
-      return false;
+    });
+    this.processPaginationLinksUrls();
+  },
+
+  //this method is here so no full refresh pagination links would not work, only via ajax
+  processPaginationLinksUrls: function(){
+    $('a', this.selectors.pagination).filter(':not([data-url])').each(function(){
+      $(this).attr('data-url', $(this).attr('href')).attr('href', 'javascript:;');
     });
   },
 
@@ -522,7 +534,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     });
 
     var loadingHtml = this.getTemplateTDContents('qtip_editor_loading_message');
-    this.qtipAPI.set('content.text', $('<div class="qtip_grid_editor_contents"></div>').attr('data-invitation_id', recordId).html(loadingHtml));
+    this.qtipAPI.set('content.text', $('<div class="qtip_grid_editor_contents"></div>').attr('data-grid_id', this.id).attr('data-row_id', recordId).html(loadingHtml));
     this.qtipAPI.set('position.target', td);
     this.qtipAPI.show();
     td.addClass('editing');
@@ -530,6 +542,12 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       qtip: true,
       td: td
     };
+  },
+
+  onAjaxSetQtipEditorContents: function(rowId, html){
+    $('.qtip_grid_editor_contents[data-row_id={0}]'.format(rowId)).html(html);
+    this.qtipAPI.redraw().reposition();
+    iPlan.ui.util.QTipIntializer.init($('.qtip_grid_editor_contents[data-row_id={0}]'.format(rowId)));
   },
 
   _initQtipAPI: function(){
@@ -646,8 +664,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.qtipAPI.hide(); //hide qtip
   },
 
-  doneQtipEditingForInvitation: function(invitationId){
-    if($('div.qtip_grid_editor_contents[data-invitation_id={0}]'.format(invitationId)).length > 0){ //if really editing this qtip, stop it (might happen that this method is invoked when already editing another invitation when ajax request respose is rendered)
+  doneQtipEditingForRow: function(rowId){
+    if($('div.qtip_grid_editor_contents[data-row_id={0}]'.format(rowId)).length > 0){ //if really editing this qtip, stop it (might happen that this method is invoked when already editing another invitation when ajax request respose is rendered)
       this.stopQtipEditing();
     }
   },
@@ -706,8 +724,10 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     $(this.selectors.grid).replaceWith(newGridHtml);
     this.attachAPI();
     this.reinitQtipsAndFboxes();
+    this.processPaginationLinksUrls();
     this.fire('updatedWithAjax');
     this.server_params = server_params;
+    this.stopQtipEditing();
   },
 
   onAjaxUpdateRowCell: function(rowId, columnId, newTableHtml){
