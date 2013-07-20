@@ -164,6 +164,14 @@ module AjaxDataGrid
               end
               yield #render rows (invoked block that should call table_rows method)
             end
+
+            if @builder.table_footer_block.present?
+              @tpl.haml_tag :tfoot do
+                aggregated_data = {}
+                aggregated_data = @builder.aggregated_data_config.data if @builder.aggregated_data_config.present?
+                @tpl.haml_concat @tpl.capture(aggregated_data, &@builder.table_footer_block)
+              end
+            end
           end
         end
 
@@ -227,6 +235,8 @@ module AjaxDataGrid
 
         def table_rows_string_concat
           @builder.config.model.rows.each do |entity|
+            @builder.aggregated_data_config.aggregator_block.call(entity, @builder.aggregated_data_config.data) if @builder.aggregated_data_config.present?
+
             html = ''
             entity_selected_class = @builder.config.model.row_selected?(entity) ? ' selected' : ''
             row_title = @builder.table_options[:row_title].present? ? 'data-row_title="' << @builder.table_options[:row_title].call(entity).to_s << '"' : ''

@@ -2,7 +2,7 @@ module AjaxDataGrid
 
   class Builder
 
-    attr_reader :config, :tile_config, :columns, :table_options
+    attr_reader :config, :tile_config, :columns, :table_options, :aggregated_data_config, :table_footer_block
 
     def initialize(config, table_options = {})
       @config = config
@@ -37,9 +37,17 @@ module AjaxDataGrid
                  :url_method => :delete,
                  :url_remote => true,
                  :confirm_message => @config.translate('destroy_column.confirm_message')
-                }.update(options.update(:class => 'destroy'))
+      }.update(options.update(:class => 'destroy'))
       raise ArgumentError.new("Must specify url attribute for destroy column (:url => ..)") if options[:url].blank?
       add_column(DestroyColumn, options[:title] || '', options, &block)
+    end
+
+    def data_aggregator(options = {}, &block)
+      @aggregated_data_config = AggregatedDataConfig.new(options, &block)
+    end
+
+    def table_footer(&block)
+      @table_footer_block = block
     end
 
     private
@@ -47,6 +55,14 @@ module AjaxDataGrid
       @columns << clazz.new(title, options.update(:index => @columns.length), &block)
     end
 
+  end
+
+  class AggregatedDataConfig
+    attr_reader :aggregator_block, :data
+    def initialize(options, &block)
+      @aggregator_block = block
+      @data = {}
+    end
   end
 
   class TileConfig
@@ -154,7 +170,7 @@ module AjaxDataGrid
         opts[:refresh_cols_indices] ||= []
         opts[:refresh_cols_indices] << options[:index] unless opts[:refresh_cols_indices].include?(options[:index])
       end
-      
+
       #if editable? && opts[:data_attributes][opts[:editor][:value_path]].blank?
       #  opts[:data_attributes][opts[:editor][:value_path]] = opts[:editor][:value_path]
       #end
@@ -166,7 +182,7 @@ module AjaxDataGrid
 
       opts[:views] = [opts[:views]] if opts[:views].present? && !opts[:views].is_a?(Array)
     end
-    
+
     def init_html_options
       @header_cell_options = {'data-column_id' => @id}
       @body_cell_options = {}
