@@ -271,24 +271,14 @@ module AjaxDataGrid
       true #non remote urls not supported for now
     end
 
-    def jq_dialog_confirm?
-      options[:jq_dialog_confirm] == true
-    end
-
-    def confirm?
-      !confirm_message.blank?
-    end
-
-    def confirm_message
-      options[:confirm_message]
-    end
-
     def link_to_options
       opts = {'ajax_method' => url_method, :title => button_tooltip}
-      opts['data-confirm_message'] = self.confirm_message if self.confirm?
-      if self.url_remote
-        opts['data-ajax_submit'] = true
+      if self.options[:confirm_message].present?
+        opts['data-confirm_message'] = self.options[:confirm_message]
+        self.options[:confirm_type] ||= :alert
       end
+      opts['data-confirm_type'] = self.options[:confirm_type] if self.options[:confirm_type].present?
+      opts['data-ajax_submit'] = true if self.url_remote
       opts
     end
 

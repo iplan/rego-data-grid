@@ -215,7 +215,7 @@ module AjaxDataGrid
                 if cell_content.nil?
                   url = c.url
                   url = url.call(entity) if url.is_a?(Proc)
-                  html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
+                  html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), 'javascript:;', {'data-url' => url}.update(c.link_to_options))
                 else
                   html += cell_content.to_s
                 end
@@ -266,7 +266,7 @@ module AjaxDataGrid
                 if cell_content.nil?
                   url = c.url
                   url = url.call(entity) if url.is_a?(Proc)
-                  html << @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
+                  html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), 'javascript:;', {'data-url' => url}.update(c.link_to_options))
                 else
                   html << cell_content.to_s
                 end
@@ -310,7 +310,7 @@ module AjaxDataGrid
                       if cell_content.nil?
                         url = c.url
                         url = url.call(entity) if url.is_a?(Proc)
-                        @tpl.haml_concat @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
+                        html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), 'javascript:;', {'data-url' => url}.update(c.link_to_options))
                       else
                         @tpl.haml_concat cell_content.to_s
                       end

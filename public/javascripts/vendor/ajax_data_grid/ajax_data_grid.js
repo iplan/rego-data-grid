@@ -94,23 +94,22 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       var td = a.closest('td');
       var tr = td.closest('tr.row');
       var rowId = tr.data('id');
-      var colIndex = td.index();
-      var column = self.columns[colIndex];
-      var url = a.attr('href');
-      if(column.jq_dialog_confirm){
+      var url = a.data('url');
+      if(a.data('confirm_type') == 'dialog'){
         td.addClass('confirming');
         $.dialog.show({
           position: {of: td},
+          content: a.data('confirm_message'),
           type: 'confirm',
           events: {
             hide: function(){ td.removeClass('confirming') },
             yes: function(){ self.performEntityRemove(rowId, url); }
           }
         });
-      }else {
+      }else if(a.data('confirm_type') == 'alert'){
         if(a.data('confirm_message') && a.data('confirm_message').length > 0){
           td.addClass('confirming');
-          var answer = confirm(a.data('confirm_message'));
+          var answer = window.confirm(a.data('confirm_message'));
           if(answer) {
             self.performEntityRemove(rowId, url);
           }
@@ -255,6 +254,36 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
         }
       });
 
+    });
+
+    //init destroy links
+    $(self.selectors.multirow_actions).find('a[data-action=destroy]').live('click', function(e){
+      if(!self.hasSelectedRows()) return;
+
+      var a = $(this);
+      if(a.data('confirm_type') == 'dialog'){
+        $.dialog.show({
+          position: {of: a},
+          content: a.data('confirm_message'),
+          type: 'confirm',
+          events: {
+            yes: function(){
+              var ids = self.getSelectedRows().map(function(){ return $(this).data('id'); }).toArray();
+              self.performMultipleRowsRemove(ids, a.data('url'));
+            }
+          }
+        });
+      }else if(a.data('confirm_type') == 'alert'){
+        if(a.data('confirm_message') && a.data('confirm_message').length > 0){
+          var answer = window.confirm(a.data('confirm_message'));
+          if(answer) {
+            var ids = self.getSelectedRows().map(function(){ return $(this).data('id'); }).toArray();
+            self.performMultipleRowsRemove(ids, a.data('url'));
+          }
+        }
+      }
+      e.stopEvent();
+      return false;
     });
 
     //init dialog multi edit buttons
@@ -403,6 +432,28 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       success: function(){
         self.fire('updatedWithAjax');
         self.reinitQtipsAndFboxes();
+      }
+    });
+  },
+
+  performMultipleRowsRemove: function(recordsIds, url){
+    var self = this;
+
+    recordsIds.each(function(rowId){ self.markRowAsDestroying(rowId); });
+    self.toggleLoading(true);
+
+    var params = $.extend({_method: 'delete', ids: recordsIds}, self.server_params);
+    $.ajax({
+      url: url,
+      type: 'post',
+      dataType: 'script',
+      data: $.param(params),
+      success: function(){
+        self.fire('updatedWithAjax');
+        self.reinitQtipsAndFboxes();
+      },
+      error: function(xhr){
+        self.logger.info('error');
       }
     });
   },
