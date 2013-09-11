@@ -42,8 +42,8 @@ module AjaxDataGrid
       add_column(DestroyColumn, options[:title] || '', options, &block)
     end
 
-    def data_aggregator(options = {}, &block)
-      @aggregated_data_config = AggregatedDataConfig.new(options, &block)
+    def data_aggregator(init_data = {}, &block)
+      @aggregated_data_config = AggregatedDataConfig.new(init_data, &block)
     end
 
     def table_footer(&block)
@@ -59,9 +59,9 @@ module AjaxDataGrid
 
   class AggregatedDataConfig
     attr_reader :aggregator_block, :data
-    def initialize(options, &block)
+    def initialize(init_data, &block)
       @aggregator_block = block
-      @data = {}
+      @data = init_data
     end
   end
 
