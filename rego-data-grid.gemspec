@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rego-data-grid"
-  s.version = "0.0.14"
+  s.version = "0.0.15"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex Tkachev"]
-  s.date = "2013-09-11"
+  s.date = "2013-11-26"
   s.description = "Ajax data grid with pagination"
   s.email = "tkachev.alex@gmail.com"
   s.extra_rdoc_files = [
@@ -75,10 +75,9 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rake>, ["= 0.9.2.2"])
-      s.add_runtime_dependency(%q<logging>, [">= 0"])
-      s.add_runtime_dependency(%q<will_paginate>, [">= 0"])
-      s.add_runtime_dependency(%q<activesupport>, ["= 3.0.9"])
+      s.add_runtime_dependency(%q<logging>, ["~> 1.8.0"])
+      s.add_runtime_dependency(%q<will_paginate>, ["~> 3.0.0"])
+      s.add_runtime_dependency(%q<activesupport>, ["~> 3.0.9"])
       s.add_development_dependency(%q<rdoc>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
@@ -88,10 +87,9 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<factory_girl_rails>, ["= 1.7.0"])
       s.add_development_dependency(%q<database_cleaner>, [">= 0"])
     else
-      s.add_dependency(%q<rake>, ["= 0.9.2.2"])
-      s.add_dependency(%q<logging>, [">= 0"])
-      s.add_dependency(%q<will_paginate>, [">= 0"])
-      s.add_dependency(%q<activesupport>, ["= 3.0.9"])
+      s.add_dependency(%q<logging>, ["~> 1.8.0"])
+      s.add_dependency(%q<will_paginate>, ["~> 3.0.0"])
+      s.add_dependency(%q<activesupport>, ["~> 3.0.9"])
       s.add_dependency(%q<rdoc>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<bundler>, [">= 0"])
@@ -102,10 +100,9 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<database_cleaner>, [">= 0"])
     end
   else
-    s.add_dependency(%q<rake>, ["= 0.9.2.2"])
-    s.add_dependency(%q<logging>, [">= 0"])
-    s.add_dependency(%q<will_paginate>, [">= 0"])
-    s.add_dependency(%q<activesupport>, ["= 3.0.9"])
+    s.add_dependency(%q<logging>, ["~> 1.8.0"])
+    s.add_dependency(%q<will_paginate>, ["~> 3.0.0"])
+    s.add_dependency(%q<activesupport>, ["~> 3.0.9"])
     s.add_dependency(%q<rdoc>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<bundler>, [">= 0"])
