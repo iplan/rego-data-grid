@@ -176,7 +176,7 @@ module AjaxDataGrid
         end
 
         def table_rows
-          @logger.info "------------------------------------- render_type = #{@builder.table_options[:render_type]}------------------------------------- "
+          @logger.debug "------------------------------------- render_type = #{@builder.table_options[:render_type]}------------------------------------- "
           if @builder.table_options[:render_type] == :haml
             table_rows_haml
           elsif @builder.table_options[:render_type] == :string_plus
