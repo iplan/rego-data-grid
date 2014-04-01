@@ -16,6 +16,7 @@ body
         div.pagesInfo
           line-height: 28px
         div.pageSize
+          line-height: 28px
           //padding: 4px 0px
           select
             width: auto
@@ -23,6 +24,8 @@ body
             height: 30px
             line-height: 30px
         div.pages
+          .pagination
+            margin: 0px
           a, em.current, span.disabled, span.gap
             float: left
           a, em.current, span.disabled
@@ -32,6 +35,8 @@ body
             color: #949488
             @include round(6px)
             margin: 0px 1px
+            line-height: 15px
+            font-size: 13px
           a:hover
             color: white
             background-color: #41769B
@@ -158,6 +163,7 @@ body
       thead
         tr
           th
+            box-sizing: content-box
             height: 36px
             padding: 5px 0px
             background: #3B698C url(/images/ajax_data_grid/table_header_bg.png) repeat-x left top
@@ -212,10 +218,19 @@ body
               text-align: center
               padding: 20px
 
-          &.row
-            margin: 0px
           &.template
             display: none
+          &.grid_row
+            margin: 0px
+            &:nth-child(odd)
+              background-color: #eef3f5
+              &:hover
+                background-color: #d0dfe5
+            &:nth-child(even)
+              background-color: #ffffff
+              &:hover
+                background-color: #d9d9d9
+
           &.working
             td
               padding: 0px 10px
@@ -243,24 +258,25 @@ body
                     color: white
               div.message
                 display: none
+
           &.creating
             background-color: #e6ffe6
 
-          &.odd
-            >td
-              background-color: #eef3f5
-          &.even
-            >td
-              background-color: #ffffff
-          &:hover
-            &.odd
-              >td
-                background-color: #d0dfe5
-            &.even
-              >td
-                background-color: #d9d9d9
-            td.edit, td.destroy
-              @include opacity(1)
+          //&.odd
+          //  >td
+          //    background-color: #eef3f5
+          //&.even
+          //  >td
+          //    background-color: #ffffff
+          //&:hover
+          //  &.odd
+          //    >td
+          //      background-color: #d0dfe5
+          //  &.even
+          //    >td
+          //      background-color: #d9d9d9
+          //  td.edit, td.destroy
+          //    @include opacity(1)
 
 
 
@@ -378,6 +394,7 @@ body
 body.rtl
   div.grid
     div.toolbar
+      box-sizing: content-box
       div.pagination_wrapper
         div.pageSize, div.pages, div.pagesInfo
           float: right

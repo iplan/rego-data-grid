@@ -64,20 +64,22 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
   initSelectionColumnEvents: function(){
     var self = this;
-    var cbAll = $('thead th.selection', self.selectors.table).live('click', function(){
+    //var cbAll = $('thead th.selection', self.selectors.table).live('click', function(){
+    var cbAll = $('body').on('click', self.selectors.table + ' thead th.selection', function(){
       var th = $(this);
       var cb = th.find('span.checkbox');
       self.toggleAllRowsSelection(!cb.hasClass('selected'));
     }).find('span.checkbox');
 
-    $('tbody td.selection', self.selectors.table).live('click', function(){
+    //$('tbody td.selection', self.selectors.table).live('click', function(){
+    $('body').on('click', self.selectors.table + ' tbody td.selection', function(){
       var td = $(this);
       var cb = td.find('span.checkbox');
       cb.toggleClass('selected');
-      td.closest('tr.row').toggleClass('selected', cb.hasClass('selected'));
+      td.closest('tr.grid_row').toggleClass('selected', cb.hasClass('selected'));
 
       //toggle the header toggler
-      var allSelected = $('tbody tr.row', self.selectors.table).length == $('tbody tr.row.selected', self.selectors.table).length;
+      var allSelected = $('tbody tr.grid_row', self.selectors.table).length == $('tbody tr.grid_row.selected', self.selectors.table).length;
       cbAll.toggleClass('selected', allSelected);
 
       self.fire('selectionChanged');
@@ -89,10 +91,11 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   initDestroyColumnEvents: function(){
     var self = this;
 
-    $('tbody td.destroy a', self.selectors.table).live('click', function(e){
+    //$('tbody td.destroy a', self.selectors.table).live('click', function(e){
+    $('body').on('click', self.selectors.table + ' tbody td.destroy a', function(e){
       var a = $(this);
       var td = a.closest('td');
-      var tr = td.closest('tr.row');
+      var tr = td.closest('tr.grid_row');
       var rowId = tr.data('id');
       var url = a.data('url');
       if(a.data('confirm_type') == 'dialog'){
@@ -125,7 +128,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var self = this;
 
     //init page size combobox
-    $('select', self.selectors.pageSize).live('change', function(){
+    //$('select', self.selectors.pageSize).live('change', function(){
+    $('body').on('change', self.selectors.pageSize + ' select', function(){
       var value = $(this).val();
       var params = {};
       params[$(this).attr('name')] = value;
@@ -133,9 +137,11 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     });
 
     //init paging buttons
-    $('a', self.selectors.pagination).live('click', function(){
+    //$('a', self.selectors.pagination).live('click', function(){
+    $('body').on('click', self.selectors.pagination + ' a', function(){
       var href = $(this).data('url');
-      self.updateGridWithAjax({paging_current_page: $.query.load(href).keys.paging_current_page});
+      var curr_page_from_href = href.match(/paging_current_page=(\d+)/)[1];
+      self.updateGridWithAjax({paging_current_page: curr_page_from_href});
     });
     this.processPaginationLinksUrls();
   },
@@ -151,7 +157,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var self = this;
 
     //init page size combobox
-    $('select', self.selectors.activeView).live('change', function(){
+    //$('select', self.selectors.activeView).live('change', function(){
+    $('body').on('change', self.selectors.activeView + ' select', function(e){
       var value = $(this).val();
       var params = {};
       params[$(this).attr('name')] = value;
@@ -162,7 +169,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   initGridEditingEvents: function(){
     var self = this;
     //init grid clicks to invoke editors
-    $('tbody', self.selectors.table).live('click', function(e){
+    //$('tbody', self.selectors.table).live('click', function(e){
+    $('body').on('click', self.selectors.table + ' tbody', function(e){
       if(self.editing || self.isLoading()) return;
 
       var td = $(e.target).closest('td.editable');
@@ -174,14 +182,15 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       } else if(td.hasClass('fbox_editor')){
         self.startFancyboxEditing(td);
       } else if(td.hasClass('qtip_editor')){
-        self.startQtipEditing(td);
+        self.startQtipEditing(td, e);
       } else {
         self.startEditing(td);
       }
     });
 
     //init validation error ok link
-    $('tbody tr td.error div.validation-error div.message a', self.selectors.table).live('click', function(e){
+    //$('tbody tr td.error div.validation-error div.message a', self.selectors.table).live('click', function(e){
+    $('body').on('click', self.selectors.table + ' tbody tr td.error div.validation-error div.message a', function(e){
       var td = $(this).closest('td');
       td.html(td.find('div.original').html());
       td.removeClass('error');
@@ -204,7 +213,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var self = this;
 
     //clear filter button
-    $('div.no-data div.no .clearFilter', this.selectors.grid).live('click', function(){
+    //$('div.no-data div.no .clearFilter', this.selectors.grid).live('click', function(){
+    $('body').on('click', self.selectors.grid + ' div.no-data div.no .clearFilter', function(e){
       if(self.manual_clear_filter){
         self.fire('clearFilter');
       } else {
@@ -216,7 +226,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
   initSortableColumns: function(){
     var self = this;
-    $('thead th.sortable', this.selectors.table).live('click', function(){
+    //$('thead th.sortable', this.selectors.table).live('click', function(){
+    $('body').on('click', self.selectors.table + ' thead th.sortable', function(e){
       self.sortByColumn($(this).index());
     });
   },
@@ -225,12 +236,14 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var self = this;
 
     //init close button
-    $(self.selectors.multirow_actions).find('a.close').live('click', function(){
+    //$(self.selectors.multirow_actions).find('a.close').live('click', function(){
+    $('body').on('click', self.selectors.multirow_actions + ' a.close', function(e){
       self.clearRowsSeleciton();
     });
 
     //init fbox multiple edit
-    $(self.selectors.multirow_actions).find('a[data-multi_edit=fbox]').live('click', function(){
+    //$(self.selectors.multirow_actions).find('a[data-multi_edit=fbox]').live('click', function(){
+    $('body').on('click', self.selectors.multirow_actions + ' a[data-multi_edit=fbox]', function(e){
       if(!self.hasSelectedRows()) return;
 
       var loadingHtml = self.getTemplateTDContents('qtip_editor_loading_message');
@@ -257,13 +270,14 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     });
 
     //init destroy links
-    $(self.selectors.multirow_actions).find('a[data-action=destroy]').live('click', function(e){
+    //$(self.selectors.multirow_actions).find('a[data-action=destroy]').live('click', function(e){
+    $('body').on('click', self.selectors.multirow_actions + ' a[data-action=destroy]', function(e){
       if(!self.hasSelectedRows()) return;
 
       var a = $(this);
       if(a.data('confirm_type') == 'dialog'){
         $.dialog.show({
-          position: {of: a},
+          position: {of: a, my: 'center top', at: 'center bottom'},
           content: a.data('confirm_message'),
           type: 'confirm',
           events: {
@@ -287,7 +301,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     });
 
     //init dialog multi edit buttons
-    $(self.selectors.multirow_actions).find('a.dialog').live('click', function(){
+    //$(self.selectors.multirow_actions).find('a.dialog').live('click', function(){
+    $('body').on('click', self.selectors.multirow_actions + ' a.dialog', function(e){
       if(!self.hasSelectedRows()) return;
 
       var columnId = $(this).data('column_id');
@@ -362,11 +377,11 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   hasSelectedRows: function(){
-    return $('tbody tr.row.selected', this.selectors.table).length > 0
+    return $('tbody tr.grid_row.selected', this.selectors.table).length > 0
   },
 
   getSelectedRows: function(){
-    return $('tbody tr.row.selected', this.selectors.table);
+    return $('tbody tr.grid_row.selected', this.selectors.table);
   },
 
   clearRowsSeleciton: function(){
@@ -376,7 +391,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   toggleAllRowsSelection: function(selected){
     var cb = $('thead th.selection span.checkbox', this.selectors.table);
     cb.toggleClass('selected', selected);
-    $('tbody tr.row', this.selectors.table).each(function(){
+    $('tbody tr.grid_row', this.selectors.table).each(function(){
       var tr = $(this);
       tr.toggleClass('selected', selected);
       tr.find('td.selection span.checkbox').toggleClass('selected', selected);
@@ -399,7 +414,6 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   //callbacks are hash of methods (key is one of $.ajax event name, value is function)
   updateGridWithAjax: function(params, callbacks){
     if(!$.isPlainObject(callbacks)) callbacks = {};
-    callbacks = $.extend({beforeSend: Function.emptyFn, success: Function.emptyFn, error: Function.emptyFn, complete: Function.emptyFn}, callbacks);
 
     var self = this;
     params = $.extend({}, this.server_params, params);
@@ -409,12 +423,19 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       url: this.urls.update_grid,
       dataType: 'script',
       data: params,
-      beforeSend: function(){ callbacks.beforeSend.apply(callbacks.beforeSend, arguments); },
-      error: function(){ callbacks.error.apply(callbacks.error, arguments); },
-      success: function(){
-        callbacks.success.apply(callbacks.success, arguments);
+      beforeSend: function(){
+        if($.isFunction(callbacks.beforeSend)) callbacks.beforeSend.apply(callbacks.beforeSend, arguments);
       },
-      complete: function(){ callbacks.complete.apply(callbacks.complete, arguments); }
+      error: function(){
+        if($.isFunction(callbacks.error)) callbacks.error.apply(callbacks.error, arguments);
+      },
+      success: function(){
+        if($.isFunction(callbacks.success)) callbacks.success.apply(callbacks.success, arguments);
+      },
+      complete: function(){
+        if($.isFunction(callbacks.complete)) callbacks.complete.apply(callbacks.complete, arguments);
+        self.toggleLoading(false);
+      }
     });
   },
 
@@ -495,7 +516,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   removeCreatingRow: function(tr){
     tr.remove();
     var table = $(this.selectors.table);
-    table.toggleClass('empty', (table.find('tbody tr.row').length + table.find('tbody tr.working').not('.template').length) == 0);
+    table.toggleClass('empty', (table.find('tbody tr.grid_row').length + table.find('tbody tr.working').not('.template').length) == 0);
   },
 
   getTemplateTR: function(type){
@@ -562,8 +583,9 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     td.addClass('editing');
   },
 
-  startQtipEditing: function(td){
+  startQtipEditing: function(td, e){
     if(!this.qtipAPI) this._initQtipAPI();
+    e.stopPropagation();
 
     var self = this;
     var colIndex = td.index();
@@ -701,6 +723,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   stopDialogEditing: function(){
+    if(!this.editing) return;
     var td = this.editing.td;
     this.editingKeyNav.unbind(td);
     td.removeClass('editing');
@@ -708,6 +731,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   stopQtipEditing: function(){
+    if(!this.editing) return;
     var td = this.editing.td;
     this.editingKeyNav.unbind(td);
     td.removeClass('editing');
@@ -876,7 +900,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
   onAjaxRowDestroyed: function(rowId){
     var self = this;
-    var tr = $(this.selectors.table).find('tbody tr.destroying[data-id={0}],tbody tr.row[data-id={0}]'.format(rowId));
+    var tr = $(this.selectors.table).find('tbody tr.destroying[data-id={0}],tbody tr.grid_row[data-id={0}]'.format(rowId));
     tr.fadeOut(function(){
       $(this).remove();
       self.toggleLoading(false);
