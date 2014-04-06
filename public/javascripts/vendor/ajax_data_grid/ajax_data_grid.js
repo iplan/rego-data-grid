@@ -452,7 +452,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       data: $.param($.extend({_method: 'delete'}, this.server_params)),
       success: function(){
         self.fire('updatedWithAjax');
-        self.reinitQtipsAndFboxes();
+        self.runNewHtmlInitializerCallback();
       }
     });
   },
@@ -471,7 +471,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       data: $.param(params),
       success: function(){
         self.fire('updatedWithAjax');
-        self.reinitQtipsAndFboxes();
+        self.runNewHtmlInitializerCallback();
       },
       error: function(xhr){
         self.logger.info('error');
@@ -484,10 +484,9 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.updateGridWithAjax(params, callbacks);
   },
 
-  reinitQtipsAndFboxes: function(container){
+  runNewHtmlInitializerCallback: function(container){
     if(arguments.length == 0) container = this.selectors.grid
-    if(this.reinit_qtip && typeof(iPlan) != 'undefined' && iPlan.ui && iPlan.ui.util && iPlan.ui.util.QTipIntializer) iPlan.ui.util.QTipIntializer.init(container);
-    if(this.reinit_fbox && typeof(FancyBoxInitalizer) != 'undefined') FancyBoxInitalizer.init(container);
+    $.datagrid.callbacks.newHtmlInitializer(container, this)
   },
 
   markRowAsDestroying: function(rowId){
@@ -798,7 +797,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
     $(this.selectors.grid).replaceWith(newGridHtml);
     this.attachAPI();
-    this.reinitQtipsAndFboxes();
+    this.runNewHtmlInitializerCallback();
     this.processPaginationLinksUrls();
     this.fire('updatedWithAjax');
     this.server_params = server_params;
@@ -815,7 +814,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var cols = [columnId].concat(column.editor.related_cols || []).collect(function(colId){ return self.columnsById[colId] ? self.columnsById[colId].index : null }).select(function(colIndex){ return colIndex != null; });
     cols.collect(function(colIndex){ return {originalTD: originalTR.find('>td').eq(colIndex), newTD: newTR.find('>td').eq(colIndex)}; }).each(function(datum){
       datum.originalTD.replaceWith(datum.newTD); //cant simply replace with each, need to use datum, 'cause replaceWith breaks col indices in newTR
-      self.reinitQtipsAndFboxes(datum.newTD);
+      self.runNewHtmlInitializerCallback(datum.newTD);
     });
     originalTR.data('row_title', newTR.data('row_title'));
   },
@@ -848,7 +847,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       this.editing.td = newTR.find('td:eq({0})'.format(qtipTdIndex)).addClass('editing');
       this.qtipAPI.set('position.target', this.editing.td);
     }
-    this.reinitQtipsAndFboxes(newTR);
+    this.runNewHtmlInitializerCallback(newTR);
   },
 
   onAjaxUpdateRowCellError: function(rowId, columnId, errorText){
@@ -895,7 +894,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     tr.replaceWith(newTR);
 
     newTR = $(this.selectors.table).find(trSelector);
-    this.reinitQtipsAndFboxes(newTR);
+    this.runNewHtmlInitializerCallback(newTR);
   },
 
   onAjaxRowDestroyed: function(rowId){
@@ -938,7 +937,14 @@ $.datagrid.helpers = {
     var divJsonAPI = $('div.grid[data-grid-id={0}] div.json_init'.format(gridId));
     var json = $.parseJSON(divJsonAPI.html());
     var grid = new $.datagrid.classes.DataGrid(json);
-    grid.reinitQtipsAndFboxes();
+    grid.runNewHtmlInitializerCallback();
   }
 
+};
+
+$.datagrid.callbacks = {
+  newHtmlInitializer: function(container, grid) {
+    if(typeof(iPlan) != 'undefined' && iPlan.ui && iPlan.ui.util && iPlan.ui.util.QTipIntializer) iPlan.ui.util.QTipIntializer.init(container);
+    if(typeof(FancyBoxInitalizer) != 'undefined') FancyBoxInitalizer.init(container);
+  }
 };
