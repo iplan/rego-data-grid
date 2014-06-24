@@ -1,7 +1,7 @@
 module AjaxDataGrid
 
   class Config
-    @@server_params_keys_reject = [:i18n_scope, :per_page_sizes, :row_title, :selection, :any_rows, :sql_sorters]
+    @@server_params_keys_reject = [:i18n_scope, :per_page_sizes, :row_title, :selection, :any_rows, :sql_sorters, :array_sorters, :views]
     @@model_options_keys_reject = [:i18n_scope, :per_page_sizes, :row_title]
 
     attr_reader :model, :options, :server_params
