@@ -65,11 +65,12 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   initSelectionColumnEvents: function(){
     var self = this;
     //var cbAll = $('thead th.selection', self.selectors.table).live('click', function(){
-    var cbAll = $('body').on('click', self.selectors.table + ' thead th.selection', function(){
+    $('body').on('click', self.selectors.table + ' thead th.selection', function(){
       var th = $(this);
       var cb = th.find('span.checkbox');
       self.toggleAllRowsSelection(!cb.hasClass('selected'));
-    }).find('span.checkbox');
+    });
+    var cbAll = $(self.selectors.table + ' thead th.selection').find('span.checkbox');
 
     //$('tbody td.selection', self.selectors.table).live('click', function(){
     $('body').on('click', self.selectors.table + ' tbody td.selection', function(){
@@ -266,7 +267,40 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
         }
       });
+    });
 
+    //init qtip multiple edit
+    $('body').on('click', self.selectors.multirow_actions + ' a[data-multi_edit=qtip]', function(e){
+      if(!self.hasSelectedRows()) return;
+
+      if(!self.qtipAPI) self._initQtipAPI();
+      e.stopPropagation();
+
+      var invitationIds = self.getSelectedRows().map(function(){ return $(this).data('id') }).get();
+      var url = $(this).data('url'); //$(this) is a button user clicked
+      $.ajax({
+        url: url,
+        type: 'post',
+        dataType: 'script',
+        data: $.param({ids: invitationIds}),
+        error: function(xhr){
+          self.logger.error('error loading qtip editor request for multiple edit for url {0}', url);
+          var loadingFailedHtml = self.getTemplateTDContents('qtip_editor_loading_failed');
+          jQuery('.qtip_grid_editor_contents').html(loadingFailedHtml);
+        },
+        complete: function(){
+        }
+      });
+
+      var loadingHtml = self.getTemplateTDContents('qtip_editor_loading_message');
+      self.qtipAPI.set('content.text', $('<div class="qtip_grid_editor_contents"></div>').attr('data-grid_id', self.id).attr('data-row_id', 'multiple').html(loadingHtml));
+      self.qtipAPI.set('position.target', $(this));
+      self.qtipAPI.set('position.adjust.y', 0);
+      self.qtipAPI.show();
+
+      self.editing = {
+        qtip: true
+      };
     });
 
     //init destroy links
@@ -608,6 +642,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var loadingHtml = this.getTemplateTDContents('qtip_editor_loading_message');
     this.qtipAPI.set('content.text', $('<div class="qtip_grid_editor_contents"></div>').attr('data-grid_id', this.id).attr('data-row_id', recordId).html(loadingHtml));
     this.qtipAPI.set('position.target', td);
+    this.qtipAPI.set('position.adjust.y', -15);
     this.qtipAPI.show();
     td.addClass('editing');
     this.editing = {
@@ -732,8 +767,10 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   stopQtipEditing: function(){
     if(!this.editing) return;
     var td = this.editing.td;
-    this.editingKeyNav.unbind(td);
-    td.removeClass('editing');
+    if(td){
+      this.editingKeyNav.unbind(td);
+      td.removeClass('editing');
+    }
     this.editing = false;
     this.qtipAPI.hide(); //hide qtip
   },
