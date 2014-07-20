@@ -52,7 +52,7 @@ module AjaxDataGrid
               options[:multirow_actions].each do |link|
                 haml_concat link
               end
-              haml_concat link_to(cfg.translate('multirow_actions.close'), 'javascript:;', :class => 'button3 grey close')
+              haml_concat link_to(cfg.translate('multirow_actions.close'), 'javascript:;', :class => 'btn close_multirow_actions', 'data-action'=>:close)
             end
           end
           #haml_tag 'div.clear'

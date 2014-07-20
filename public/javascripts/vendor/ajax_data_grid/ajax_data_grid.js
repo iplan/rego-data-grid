@@ -238,7 +238,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
     //init close button
     //$(self.selectors.multirow_actions).find('a.close').live('click', function(){
-    $('body').on('click', self.selectors.multirow_actions + ' a.close', function(e){
+    $('body').on('click', self.selectors.multirow_actions + ' a[data-action=close]', function(e){
       self.clearRowsSeleciton();
     });
 

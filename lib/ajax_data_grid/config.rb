@@ -12,7 +12,8 @@ module AjaxDataGrid
         :grid_id => "grid_#{Time.now.to_i + rand(100)}",
         :any_rows => true,
         :i18n_scope => 'plugins.data_grid',
-        :per_page_sizes => [10, 25, 50, 1000],
+        :paging_page_size => 10,
+        :per_page_sizes => [10, 25, 50, 100, 250, 500, 1000],
         :paging_current_page => 1,
         :selection => :none, #if rows should render preselected
         :sort_by => :created_at,
