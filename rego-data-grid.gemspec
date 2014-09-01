@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rego-data-grid"
-  s.version = "0.0.19"
+  s.version = "0.0.20"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex Tkachev"]
-  s.date = "2014-07-20"
+  s.date = "2014-09-01"
   s.description = "Ajax data grid with pagination"
   s.email = "tkachev.alex@gmail.com"
   s.extra_rdoc_files = [
@@ -34,13 +34,14 @@ Gem::Specification.new do |s|
     "config/locales/will_paginate.en-US.yml",
     "config/locales/will_paginate.he-IL.yml",
     "lib/ajax_data_grid.rb",
-    "lib/ajax_data_grid/builder.rb",
     "lib/ajax_data_grid/config.rb",
     "lib/ajax_data_grid/helpers.rb",
     "lib/ajax_data_grid/model.rb",
     "lib/ajax_data_grid/rails_engine.rb",
     "lib/ajax_data_grid/response_helpers.rb",
+    "lib/ajax_data_grid/table_builder.rb",
     "lib/ajax_data_grid/table_renderer.rb",
+    "lib/ajax_data_grid/toolbar_builder.rb",
     "lib/rego-data-grid.rb",
     "public/images/ajax_data_grid/checked-19x20.png",
     "public/images/ajax_data_grid/delete-32x32.png",
