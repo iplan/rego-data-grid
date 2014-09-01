@@ -1,6 +1,6 @@
 module AjaxDataGrid
 
-  class Builder
+  class TableBuilder
 
     attr_reader :config, :tile_config, :columns, :table_options, :aggregated_data_config, :table_footer_block
 

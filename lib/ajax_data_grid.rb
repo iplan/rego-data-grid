@@ -7,7 +7,8 @@
 #end
 require 'ajax_data_grid/config'
 require 'ajax_data_grid/model'
-require 'ajax_data_grid/builder'
+require 'ajax_data_grid/table_builder'
+require 'ajax_data_grid/toolbar_builder'
 require 'ajax_data_grid/helpers'
 require 'ajax_data_grid/response_helpers'
 require 'ajax_data_grid/table_renderer'

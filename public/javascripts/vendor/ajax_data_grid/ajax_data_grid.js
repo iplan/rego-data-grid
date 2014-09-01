@@ -15,7 +15,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.id = this.server_params.grid_id;
 
     this.selectors = $.extend({}, {
-      multirow_actions: 'div.multirow_actions[data-grid-id={0}]'.format(this.id),
+      multirow_actions: 'div[data-state=multirow_actions][data-grid-id={0}]'.format(this.id),
       pageSize: 'div.pageSize[data-grid-id={0}]'.format(this.id),
       activeView: 'div.activeView[data-grid-id={0}]'.format(this.id),
       pagination: 'div.pages[data-grid-id={0}] div.pagination'.format(this.id),
@@ -519,8 +519,8 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   runNewHtmlInitializerCallback: function(container){
-    if(arguments.length == 0) container = this.selectors.grid
-    $.datagrid.callbacks.newHtmlInitializer(container, this)
+    if(arguments.length == 0) container = this.selectors.grid;
+    $.datagrid.callbacks.newHtmlInitializer(container, this);
   },
 
   markRowAsDestroying: function(rowId){

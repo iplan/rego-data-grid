@@ -3,10 +3,18 @@
 body
   div.grid
     div.toolbar
+      &.top
+        @include round(15px 15px 0px 0px)
+      &.bottom
+        @include round(0px 0px 15px 15px)
       border: 1px solid #E1D7C0
       background-color: #F8F3E5
       padding: 6px 10px
       height: 28px
+      div[data-state]
+        display: none
+      div[data-state=normal]
+        display: block
       div.pagination_wrapper
         div.pageSize, div.pages, div.pagesInfo
           float: left
@@ -46,44 +54,36 @@ body
           span.disabled
             color: #ccc
             background-color: #efefef
+
       div.right_wrapper
         float: right
-        div.loading
-          padding-left: 20px
-          color: #777
-          background: transparent url(/images/ajax_data_grid/spinner-16x16.gif) no-repeat left center
-          display: none
-          line-height: 28px
         div.activeView
-          padding: 4px 0px
+          float: left
           select
             margin: 0px 5px
-      div.multirow_actions
-        //padding: 10px 20px
+        div.side-controls
+          float: left
+
+      div[data-state=loading]
+        padding-left: 20px
+        color: #777
+        background: transparent url(/images/ajax_data_grid/spinner-16x16.gif) no-repeat left center
         display: none
-
-
-      &.top
-        @include round(15px 15px 0px 0px)
-      &.bottom
-        @include round(0px 0px 15px 15px)
+        line-height: 28px
 
     &.loading
       div.toolbar
-        div.right_wrapper
-          div.loading
-            display: block
-          div.activeView
-            display: none
-        div.pagination_wrapper
+        div[data-state]
           display: none
+        div[data-state=loading]
+          display: block
 
     &.has_selection
       div.toolbar
-        div.multirow_actions
-          display: block
-        div.pagination_wrapper, div.right_wrapper
+        div[data-state]
           display: none
+        div[data-state=multirow_actions]
+          display: block
 
     div.no-data
       text-align: center
@@ -400,14 +400,18 @@ body.rtl
           a, em.current, span.disabled, span.gap
             float: right
       //div.clear
-     clear: right
+      clear: right
       div.right_wrapper
         float: left
-        div.active_view
-          div.loading
-            padding-right: 20px
-            padding-left: 0px
-            background-position: right center
+        div.activeView
+          float: right
+        div.side-controls
+          float: right
+
+      div[data-state=loading]
+        padding-right: 20px
+        padding-left: 0px
+        background-position: right center
 
     div.tiles_view
       div.tile
@@ -417,10 +421,10 @@ body.rtl
       thead tr th, tbody tr td
         &.right
           div.cell
-            //text-align: left
+        //text-align: left
         &.left
           div.cell
-            //text-align: right
+        //text-align: right
         &.selection
           div.cell
             text-align: center

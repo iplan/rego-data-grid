@@ -29,29 +29,36 @@ module AjaxDataGrid
         end
       end
 
-      def data_grid_toolbar(cfg, options = {})
+      def data_grid_toolbar(cfg, options = {}, &block)
         options = {:pos => :top}.update(options)
+        builder = AjaxDataGrid::ToolbarBuilder.new
+        yield builder if block.present? # user defines multirow actionsn and side controls
         haml_tag 'div.toolbar', :class => options[:pos] do
-          haml_tag 'div.right_wrapper'do
-            haml_tag 'div.loading', cfg.translate('loading')
-            if cfg.options.views.size > 1
-              data_grid_active_view(cfg)
-            end
-          end
-          if cfg.model.has_paging?
-            haml_tag 'div.pagination_wrapper' do
-              data_grid_rows_per_page(cfg)
-              data_grid_pagination(cfg)
-              data_grid_pagination_info(cfg)
-              #haml_tag 'div.clear'
-            end
-          end
-          if options[:multirow_actions].is_a?(Array) && options[:multirow_actions].length > 0
-            haml_tag 'div.multirow_actions', 'data-grid-id' => cfg.grid_id do
-              haml_tag 'span.intro', raw(cfg.translate('multirow_actions.intro', :count => '<span class="count">0</span>'))
-              options[:multirow_actions].each do |link|
-                haml_concat link
+          haml_tag 'div', cfg.translate('loading'), 'data-state'=>:loading
+          haml_tag 'div', 'data-state'=>:normal do
+            haml_tag 'div.right_wrapper'do
+              if cfg.options.views.size > 1
+                data_grid_active_view(cfg)
               end
+              if builder.side_controls_block.present?
+                haml_tag 'div.side-controls' do
+                  haml_concat capture(&builder.side_controls_block)
+                end
+              end
+            end
+            if cfg.model.has_paging?
+              haml_tag 'div.pagination_wrapper' do
+                data_grid_rows_per_page(cfg)
+                data_grid_pagination(cfg)
+                data_grid_pagination_info(cfg)
+                #haml_tag 'div.clear'
+              end
+            end
+          end
+          if builder.multirow_actions_block.present?
+            haml_tag 'div', 'data-state'=>:multirow_actions, 'data-grid-id' => cfg.grid_id do
+              haml_tag 'span.intro', raw(cfg.translate('multirow_actions.intro', :count => '<span class="count">0</span>'))
+              haml_concat capture(&builder.multirow_actions_block)
               haml_concat link_to(cfg.translate('multirow_actions.close'), 'javascript:;', :class => 'btn close_multirow_actions', 'data-action'=>:close)
             end
           end
@@ -65,7 +72,7 @@ module AjaxDataGrid
           :render_javascript_tag => !request.xhr?
         }.update(options)
 
-        builder = AjaxDataGrid::Builder.new(cfg, options)
+        builder = AjaxDataGrid::TableBuilder.new(cfg, options)
         yield builder # user defines columns and their content
 
         TableRenderer.new(builder, self).render_all
