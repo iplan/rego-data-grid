@@ -10,12 +10,13 @@ body
       border: 1px solid #E1D7C0
       background-color: #F8F3E5
       padding: 6px 10px
-      height: 28px
+      //height: 28px
       div[data-state]
         display: none
       div[data-state=normal]
         display: block
       div.pagination_wrapper
+        @include my_clearfix()
         div.pageSize, div.pages, div.pagesInfo
           float: left
           margin: 0px 5px
