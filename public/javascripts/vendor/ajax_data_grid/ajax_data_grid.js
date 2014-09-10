@@ -934,12 +934,33 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     this.runNewHtmlInitializerCallback(newTR);
   },
 
-  onAjaxRowDestroyed: function(rowId){
+  _reloadEmptyGrid: function() {
+    if ($(self.selectors.table).find('tbody tr.grid_row').length != 0) return;
+    //load the current page number if there was a next page or if there is only one page
+    var next_page = $('.pagination .next_page');
+    if(next_page.length == 0 || next_page.is(':not(.disabled)') ) {
+      var curr_page = $(this.selectors.pagination).find('.current').first().text() || 1;
+      this.updateGridWithAjax({paging_current_page: curr_page});
+    } else {
+      //load previous page if all rows of last page were deleted
+      $(this.selectors.pagination).find('.previous_page').click();
+    }
+  },
+
+  onAjaxRowsDestroyed: function(rowIDs) {
+    var self = this;
+    $.each(rowIDs, function(i,e){
+      self.onAjaxRowDestroyed(e, true);
+    });
+    self._reloadEmptyGrid();
+  },
+
+  onAjaxRowDestroyed: function(rowId, skipReloadGrid){
     var self = this;
     var tr = $(this.selectors.table).find('tbody tr.destroying[data-id={0}],tbody tr.grid_row[data-id={0}]'.format(rowId));
     tr.fadeOut(function(){
       $(this).remove();
-      self.toggleLoading(false);
+      if (!skipReloadGrid) self._reloadEmptyGrid();
     });
   },
 
