@@ -217,54 +217,59 @@ module AjaxDataGrid
           end
         end
 
+        def string_concat_row(entity)
+          entity_selected_class = @builder.config.model.row_selected?(entity) ? ' selected' : ''
+          row_title = @builder.table_options[:row_title].present? ? 'data-row_title="' << @builder.table_options[:row_title].call(entity).to_s << '"' : ''
+          html = '<tr class="grid_row ' << entity_selected_class << '" data-id="' << entity.id.to_s << '"' << row_title << '>'
+          @builder.columns.each do |c|
+            next unless c.in_view?(@builder.config.active_view) # skip columns that are not in currently active grid view
+
+            cell_attributes = c.body_cell_options.update(body_cell_data_options(c, entity))
+
+            html << '<td '
+            cell_attributes.each{|k,v| html << k.to_s << '="' << Haml::Helpers.escape_once(v.to_s) << '" '}
+            html << '>'
+            html << '<div class="cell">'
+            if c.is_a?(SelectColumn)
+              html << '<span class="checkbox ' << entity_selected_class << '"></span>'
+            elsif c.is_a?(EditColumn)
+              cell_content = extract_column_content(c, entity, false)
+              if cell_content.nil?
+                url = c.url
+                url = url.call(entity) if url.is_a?(Proc)
+                html << @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
+              else
+                html << cell_content.to_s
+              end
+            elsif c.is_a?(DestroyColumn)
+              cell_content = extract_column_content(c, entity, false)
+              if cell_content.nil?
+                url = c.url
+                url = url.call(entity) if url.is_a?(Proc)
+                html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), 'javascript:;', {'data-url' => url}.update(c.link_to_options))
+              else
+                html << cell_content.to_s
+              end
+            else
+              cell_content = extract_column_content(c, entity).to_s
+              html << cell_content unless cell_content.nil?
+            end
+            html << '</div></td>'
+          end
+          html + '</tr>'
+        end
+
         def table_rows_string_concat
           @builder.config.model.rows.each do |entity|
             @builder.aggregated_data_config.aggregator_block.call(entity, @builder.aggregated_data_config.data) if @builder.aggregated_data_config.present?
-
-            html = ''
-            entity_selected_class = @builder.config.model.row_selected?(entity) ? ' selected' : ''
-            row_title = @builder.table_options[:row_title].present? ? 'data-row_title="' << @builder.table_options[:row_title].call(entity).to_s << '"' : ''
-            html << '<tr class="grid_row ' << entity_selected_class << '" data-id="' << entity.id.to_s << '"' << row_title << '>'
-            @builder.columns.each do |c|
-              next unless c.in_view?(@builder.config.active_view) # skip columns that are not in currently active grid view
-
-              cell_attributes = c.body_cell_options.update(body_cell_data_options(c, entity))
-
-              html << '<td '
-              cell_attributes.each{|k,v| html << k.to_s << '="' << Haml::Helpers.escape_once(v.to_s) << '" '}
-              html << '>'
-              html << '<div class="cell">'
-              if c.is_a?(SelectColumn)
-                html << '<span class="checkbox ' << entity_selected_class << '"></span>'
-              elsif c.is_a?(EditColumn)
-                cell_content = extract_column_content(c, entity, false)
-                if cell_content.nil?
-                  url = c.url
-                  url = url.call(entity) if url.is_a?(Proc)
-                  html << @tpl.link_to(@tpl.image_tag('/images/blank.gif'), url, c.link_to_options)
-                else
-                  html << cell_content.to_s
-                end
-              elsif c.is_a?(DestroyColumn)
-                cell_content = extract_column_content(c, entity, false)
-                if cell_content.nil?
-                  url = c.url
-                  url = url.call(entity) if url.is_a?(Proc)
-                  html += @tpl.link_to(@tpl.image_tag('/images/blank.gif'), 'javascript:;', {'data-url' => url}.update(c.link_to_options))
-                else
-                  html << cell_content.to_s
-                end
-              else
-                cell_content = extract_column_content(c, entity).to_s
-                html << cell_content unless cell_content.nil?
+            if @builder.table_options[:cache_key].present?
+              html = Rails.cache.fetch(@builder.table_options[:cache_key].call(entity)) do
+                string_concat_row(entity)
               end
-              html << '</div>'
-              html << '</td>'
+            else
+              html = string_concat_row(entity)
             end
-            html += '</tr>'
-
             @tpl.haml_concat html
-
           end
         end
 
