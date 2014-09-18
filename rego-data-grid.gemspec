@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rego-data-grid"
-  s.version = "0.0.21"
+  s.version = "0.0.22"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex Tkachev"]
-  s.date = "2014-09-11"
+  s.date = "2014-09-18"
   s.description = "Ajax data grid with pagination"
   s.email = "tkachev.alex@gmail.com"
   s.extra_rdoc_files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "app/views/ajax_data_grid/_grid_api.js.erb",
     "app/views/ajax_data_grid/_no_filter_results.html.haml",
     "app/views/ajax_data_grid/_table_row_create_error.html.haml",
     "app/views/ajax_data_grid/_table_row_destroy_error.html.haml",

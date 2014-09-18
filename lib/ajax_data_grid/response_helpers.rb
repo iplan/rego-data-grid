@@ -8,8 +8,8 @@ module AjaxDataGrid
         render 'ajax_data_grid/table_row_destroy_error.html', :options => options, :model => model, :message => message
       end
 
-      def data_grid_ajax_grid_api(grid_id)
-        "$('div.grid[data-grid-id=#{grid_id}] div.grid_table').data('api')"
+      def data_grid_ajax_api_response_js(dgc, options = {})
+        render 'ajax_data_grid/grid_api.js', :dgc => dgc, :grid_partial => options[:partial] || 'grid.html'
       end
 
     end
