@@ -1,2 +1,2 @@
 var apiDataGrid = $.datagrid.helpers.findAPI('<%= dgc.grid_id %>');
-apiDataGrid.onAjaxUpdateGrid("<%=escape_javascript render(grid_partial, :dgc => dgc) %>", <%=raw dgc.server_params.to_json %>);
+apiDataGrid.onAjaxUpdateGrid("<%=escape_javascript render(grid_partial, partial_locals.update(:dgc => dgc)) %>", <%=raw dgc.server_params.to_json %>);

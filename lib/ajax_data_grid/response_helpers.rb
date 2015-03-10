@@ -9,7 +9,7 @@ module AjaxDataGrid
       end
 
       def data_grid_ajax_api_response_js(dgc, options = {})
-        render 'ajax_data_grid/grid_api.js', :dgc => dgc, :grid_partial => options[:partial] || 'grid.html'
+        render 'ajax_data_grid/grid_api.js', :dgc => dgc, :grid_partial => options[:partial] || 'grid.html', :partial_locals => options[:locals]||{}
       end
 
     end

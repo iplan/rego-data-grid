@@ -67,7 +67,12 @@ module AjaxDataGrid
             raise ArgumentError.new("Sorting by #{sort_by} is not supported")
           end
 
-          rows = rows.reorder("#{sort_by} #{@options.sort_direction}")
+          if sort_by.is_a?(Hash) # choose sort string with direction (complex multiple cols sorting) - sort_by = {:asc => 'col1 asc, col2 desc', :desc => 'col1 desc, cols asc'}
+            sort_by_with_direction = sort_by[@options.sort_direction.to_sym]
+          else  # add direction (simple one col sorting)
+            sort_by_with_direction = "#{sort_by} #{@options.sort_direction}"
+          end
+          rows = rows.reorder(sort_by_with_direction)
         elsif rows.is_a?(Array)
           if @options.array_sorters.has_key?(sort_by.to_sym)
             sort_proc = @options.array_sorters[sort_by.to_sym]
@@ -96,6 +101,6 @@ module AjaxDataGrid
 
       rows
     end
-    
+
   end
 end
