@@ -248,9 +248,13 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       if(!self.hasSelectedRows()) return;
 
       var loadingHtml = self.getTemplateTDContents('qtip_editor_loading_message');
-      $.fancybox(
-        $.extend({content: $('<div class="fbox multiple_editing"></div>').html(loadingHtml)}, FancyBoxInitalizer.config.forms.fancybox)
-      );
+      if($.fancybox.version && $.fancybox.version.match(/^2\./)) { //fbox2
+        $.fancybox.showLoading();
+      }else {
+        $.fancybox(
+          $.extend({content: $('<div class="fbox multiple_editing"></div>').html(loadingHtml)}, FancyBoxInitalizer.config.forms.fancybox)
+        );
+      }
 
       var url = $(this).data('url');
       var invitationIds = self.getSelectedRows().map(function(){ return $(this).data('id') }).get();
@@ -610,9 +614,14 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     var recordId = tr.data('id');
     url = url.replace("_0_", recordId);
 
-    $.fancybox(
-      $.extend({ href: url, ajax: {data: {grid_id: this.id}}, onClosed: removeEditingClassFunction, onCancel: removeEditingClassFunction}, FancyBoxInitalizer.config.forms.fancybox)
-    );
+    if($.fancybox.version && $.fancybox.version.match(/^2\./)) { //fbox2
+      $.fancybox.open(url, $.extend({}, Initializers.fbox.getOptions('ajax')));
+    }else{
+      $.fancybox(
+        $.extend({ href: url, ajax: {data: {grid_id: this.id}}, onClosed: removeEditingClassFunction, onCancel: removeEditingClassFunction}, FancyBoxInitalizer.config.forms.fancybox)
+      );
+    }
+
     td.addClass('editing');
   },
 
