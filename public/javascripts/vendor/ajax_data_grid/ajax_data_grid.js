@@ -662,7 +662,11 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
   onAjaxSetQtipEditorContents: function(rowId, html){
     $('.qtip_grid_editor_contents[data-row_id={0}]'.format(rowId)).html(html);
-    this.qtipAPI.redraw().reposition();
+    if(this.qtipAPI.redraw){
+      this.qtipAPI.redraw().reposition();
+    }else {
+      this.qtipAPI.render().reposition();
+    }
     iPlan.ui.util.QTipIntializer.init($('.qtip_grid_editor_contents[data-row_id={0}]'.format(rowId)));
   },
 
@@ -675,7 +679,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       viewport: $('body'),
       adjust: {y: -15, x: 0, method: 'flipinvert'}
     };
-    this.qtipAPI = $('<div class="qtip_api_holder"></div>').attr('data-grid_id', this.id).appendTo($(document)).qtip({
+    this.qtipAPI = $('<div class="qtip_api_holder"></div>').attr('data-grid_id', this.id).appendTo($('body')).qtip({
       content: 'content',
       position: position,
       events: {
@@ -1012,6 +1016,7 @@ $.datagrid.helpers = {
 $.datagrid.callbacks = {
   newHtmlInitializer: function(container, grid) {
     if(typeof(iPlan) != 'undefined' && iPlan.ui && iPlan.ui.util && iPlan.ui.util.QTipIntializer) iPlan.ui.util.QTipIntializer.init(container);
+    if(typeof(Initializers) != 'undefined' && Initializers && Initializers.initNonLive) Initializers.initNonLive(container);
     if(typeof(FancyBoxInitalizer) != 'undefined') FancyBoxInitalizer.init(container);
   }
 };
