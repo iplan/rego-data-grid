@@ -5,7 +5,7 @@ source "http://rubygems.org"
 
 gem "logging", '>= 1.6'
 gem "will_paginate", '>= 3.0.0'
-gem "activesupport", '>= 3.0.9'
+gem "activesupport", '~> 3.0.9'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
