@@ -81,32 +81,23 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<logging>.freeze, [">= 1.6"])
       s.add_runtime_dependency(%q<will_paginate>.freeze, [">= 3.0.0"])
       s.add_runtime_dependency(%q<activesupport>.freeze, [">= 3.0.9"])
-      s.add_development_dependency(%q<rdoc>.freeze, [">= 0"])
       s.add_development_dependency(%q<bundler>.freeze, [">= 0"])
       s.add_development_dependency(%q<jeweler>.freeze, [">= 0"])
-      s.add_development_dependency(%q<sqlite3>.freeze, [">= 0"])
-      s.add_development_dependency(%q<factory_girl_rails>.freeze, ["= 1.7.0"])
       s.add_development_dependency(%q<database_cleaner>.freeze, [">= 0"])
     else
       s.add_dependency(%q<logging>.freeze, [">= 1.6"])
       s.add_dependency(%q<will_paginate>.freeze, [">= 3.0.0"])
       s.add_dependency(%q<activesupport>.freeze, [">= 3.0.9"])
-      s.add_dependency(%q<rdoc>.freeze, [">= 0"])
       s.add_dependency(%q<bundler>.freeze, [">= 0"])
       s.add_dependency(%q<jeweler>.freeze, [">= 0"])
-      s.add_dependency(%q<sqlite3>.freeze, [">= 0"])
-      s.add_dependency(%q<factory_girl_rails>.freeze, ["= 1.7.0"])
       s.add_dependency(%q<database_cleaner>.freeze, [">= 0"])
     end
   else
     s.add_dependency(%q<logging>.freeze, [">= 1.6"])
     s.add_dependency(%q<will_paginate>.freeze, [">= 3.0.0"])
     s.add_dependency(%q<activesupport>.freeze, [">= 3.0.9"])
-    s.add_dependency(%q<rdoc>.freeze, [">= 0"])
     s.add_dependency(%q<bundler>.freeze, [">= 0"])
     s.add_dependency(%q<jeweler>.freeze, [">= 0"])
-    s.add_dependency(%q<sqlite3>.freeze, [">= 0"])
-    s.add_dependency(%q<factory_girl_rails>.freeze, ["= 1.7.0"])
     s.add_dependency(%q<database_cleaner>.freeze, [">= 0"])
   end
 end
