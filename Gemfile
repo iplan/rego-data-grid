@@ -10,12 +10,12 @@ gem "activesupport", '>= 3.0.9'
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
-  gem "rdoc"
-  gem "rspec"
+  # gem "rdoc"
+  # gem "rspec"
   gem "bundler"
   gem "jeweler"
   #gem "rcov"
-  gem 'sqlite3'
-  gem "factory_girl_rails", '1.7.0'
+  # gem 'sqlite3'
+  # gem "factory_girl_rails", '1.7.0'
   gem 'database_cleaner'
 end

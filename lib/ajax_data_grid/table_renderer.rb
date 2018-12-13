@@ -15,7 +15,7 @@ module AjaxDataGrid
         end
 
         def render_table
-          @tpl.haml_tag :div, :'data-grid-id' => @builder.config.grid_id, :class => 'grid_table_wrapper' do
+          @tpl.haml_tag :div, :'data-grid-id' => @builder.config.grid_id, :class => 'grid_table_wrapper', 'data-columns_json'=>@builder.columns.collect{|c| c.js_options }.to_json do
             if @builder.table_options[:tiles_view]
               tiles_layout
             else

@@ -28,9 +28,6 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
 
     this.editing = false;
 
-    this.columnsById = {};
-    this.columns.each(function(column){ self.columnsById[column.id] = column; });
-
     this.attachAPI();
 
     jQuery(document).ready(function(){
@@ -44,11 +41,19 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
   },
 
   init: function(){
+    this.initColumns();
     this.initEvents();
   },
 
   attachAPI: function(){
     $(this.selectors.grid_table_wrapper).data('api', this);
+  },
+
+  initColumns: function(){
+    var self = this;
+    this.columnsById = {};
+    this.columns = $(this.selectors.grid_table_wrapper).data('columns_json');
+    this.columns.each(function(column){ self.columnsById[column.id] = column; });
   },
 
   initEvents: function(){
@@ -818,7 +823,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
       grid_id: this.id,
       column_id: column.id,
       //related_cols: column.editor.related_cols || [],
-      _method: 'put'
+      _method: 'patch'
     };
     params[this.paramsModelName] = attributeValuesHash;
 
@@ -846,6 +851,7 @@ $.datagrid.classes.DataGrid = $.ext.Class.create({
     }
 
     $(this.selectors.grid).replaceWith(newGridHtml);
+    this.initColumns();
     this.attachAPI();
     this.runNewHtmlInitializerCallback();
     this.processPaginationLinksUrls();
